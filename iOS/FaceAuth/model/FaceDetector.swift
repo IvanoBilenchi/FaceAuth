@@ -17,6 +17,8 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     let session: AVCaptureSession
     var detectLandmarks = false
+    var lastObservation: FaceObservation?
+    
     weak var delegate: FaceDetectorDelegate?
     
     // MARK: Private properties
@@ -73,6 +75,11 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         var box = observation.boundingBox
         box.origin.y = 1.0 - box.origin.y - box.size.height
         
+        guard box.intersection(CGRect(x: 0.0, y: 0.0, width: 1.0, height: 1.0)).equalTo(box) else {
+            DispatchQueue.main.async { self.delegate?.faceDetectorStoppedDetectingFace(self) }
+            return
+        }
+        
         // Get landmarks
         var landmarkGroups: [[CGPoint]]
         
@@ -94,6 +101,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         
         let faceObservation = FaceObservation(buffer: lastBuffer, boundingBox: box, landmarks: landmarkGroups)
+        lastObservation = faceObservation
         
         DispatchQueue.main.async {
             self.delegate?.faceDetector(self, didDetectFace: faceObservation)

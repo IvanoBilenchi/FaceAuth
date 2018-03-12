@@ -6,7 +6,15 @@
 import AVFoundation
 import UIKit
 
+protocol CameraViewDelegate: class {
+    func cameraViewDidPressCaptureButton(_ cameraView: CameraView)
+}
+
 class CameraView: UIView {
+    
+    // MARK: Public properties
+    
+    weak var delegate: CameraViewDelegate?
     
     // MARK: Private properties
     
@@ -20,17 +28,37 @@ class CameraView: UIView {
     
     private lazy var faceView: FaceView = FaceView(frame: .zero)
     
+    private lazy var cameraButton: CameraButton = CameraButton(frame: .zero)
+    
     // MARK: Lifecycle
     
     init(session: AVCaptureSession) {
         super.init(frame: .zero)
         cameraLayer.session = session
-        faceView.alpha = 0.0
-        addSubview(faceView)
+        setupSubviews()
+        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupSubviews() {
+        // faceView
+        faceView.alpha = 0.0
+        addSubview(faceView)
+        
+        // photoCaptureButton
+        cameraButton.addTarget(self, action: #selector(handleCameraButtonPress), for: .touchUpInside)
+        addSubview(cameraButton)
+    }
+    
+    private func setupConstraints() {
+        cameraButton.translatesAutoresizingMaskIntoConstraints = false
+        cameraButton.widthAnchor.constraint(equalToConstant: 80.0).isActive = true
+        cameraButton.heightAnchor.constraint(equalTo: cameraButton.widthAnchor).isActive = true
+        cameraButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0).isActive = true
+        cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     }
     
     // MARK: UIView
@@ -68,5 +96,19 @@ class CameraView: UIView {
     func setFaceLandmarks(_ landmarks: [[CGPoint]]) {
         let normalizedLandmarks = landmarks.map({ $0.map({ cameraLayer.layerPointConverted(fromCaptureDevicePoint: $0) }) })
         faceView.drawLandmarks(normalizedLandmarks)
+    }
+    
+    func setCameraButtonEnabled(_ enabled: Bool) {
+        cameraButton.isEnabled = enabled
+        
+        UIView.animate(withDuration: 0.2) {
+            self.cameraButton.alpha = enabled ? 1.0 : 0.5
+        }
+    }
+    
+    // MARK: Private methods
+    
+    @objc private func handleCameraButtonPress() {
+        delegate?.cameraViewDidPressCaptureButton(self)
     }
 }

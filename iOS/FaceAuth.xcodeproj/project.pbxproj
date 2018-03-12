@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */; };
+		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
 		CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75DB602051ACA800B0B58A /* FaceDetector.swift */; };
 		CCA1B38620519AA600DB8A7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCA1B37E20519AA600DB8A7F /* Assets.xcassets */; };
 		CCA1B38720519AA600DB8A7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CCA1B37F20519AA600DB8A7F /* LaunchScreen.storyboard */; };
@@ -20,6 +21,7 @@
 
 /* Begin PBXFileReference section */
 		CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceObservation.swift; sourceTree = "<group>"; };
+		CC5CAF1F2056E2610096D17B /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CC75DB602051ACA800B0B58A /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
 		CCA1B36820519A0200DB8A7F /* FaceAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA1B37E20519AA600DB8A7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 		CCA1B38B20519C6600DB8A7F /* view */ = {
 			isa = PBXGroup;
 			children = (
+				CC5CAF1F2056E2610096D17B /* CameraButton.swift */,
 				CCA1B38D20519C9300DB8A7F /* CameraView.swift */,
 				CCB90AFE2055412300EF8698 /* FaceView.swift */,
 			);
@@ -189,6 +192,7 @@
 			files = (
 				CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */,
 				CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */,
+				CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */,
 				CCA1B3902051A24400DB8A7F /* AppFactory.swift in Sources */,
 				CCA1B38E20519C9300DB8A7F /* CameraView.swift in Sources */,
 				CCA1B38A20519AA600DB8A7F /* CameraController.swift in Sources */,

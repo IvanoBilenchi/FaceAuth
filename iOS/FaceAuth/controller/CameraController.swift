@@ -6,18 +6,20 @@
 import AVFoundation
 import UIKit
 
-class CameraController: UIViewController, FaceDetectorDelegate {
+class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
     
     // MARK: Private properties
     
     private let detector: FaceDetector
     private var cameraView: CameraView { return view as! CameraView }
+    private lazy var photoView: UIImageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 200.0, height: 200.0)))
     
     // MARK: Lifecycle
     
     init(detector: FaceDetector) {
         self.detector = detector
         super.init(nibName: nil, bundle: nil)
+        cameraView.delegate = self
         detector.delegate = self
     }
     
@@ -25,25 +27,10 @@ class CameraController: UIViewController, FaceDetectorDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Layout
-    
-    func setupConstraints() {
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        view.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-        view.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-    }
-    
     // MARK: UIViewController
     
     override func loadView() {
         self.view = CameraView(session: detector.session)
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupConstraints()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -56,14 +43,18 @@ class CameraController: UIViewController, FaceDetectorDelegate {
     func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation) {
         cameraView.setFaceBoundingBox(faceObservation.boundingBox)
         cameraView.setFaceLandmarks(faceObservation.landmarks)
-    }
-    
-    func faceDetector(_ faceDetector: FaceDetector, didDetectFaceWithNormalizedBoundingBox boundingBox: CGRect, landmarks: [[CGPoint]]) {
-        cameraView.setFaceBoundingBox(boundingBox)
-        cameraView.setFaceLandmarks(landmarks)
+        cameraView.setCameraButtonEnabled(true)
     }
     
     func faceDetectorStoppedDetectingFace(_ faceDetector: FaceDetector) {
         cameraView.removeFaceBoundingBox()
+        cameraView.setCameraButtonEnabled(false)
+    }
+    
+    // MARK: CameraViewDelegate
+    
+    func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
+        if photoView.superview == nil { view.addSubview(photoView) }
+        photoView.image = detector.lastObservation?.image
     }
 }
