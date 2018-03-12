@@ -49,7 +49,7 @@ class CameraView: UIView {
                 self.faceView.alpha = 1.0
             })
         } else {
-            UIView.animate(withDuration: 0.1, animations: {
+            UIView.animate(withDuration: 0.05, animations: {
                 self.faceView.frame = rect
             })
         }
@@ -62,10 +62,7 @@ class CameraView: UIView {
     }
     
     func setFaceLandmarks(_ landmarks: [[CGPoint]]) {
-        faceView.removeAllLandmarks()
-        
-        for landmark in landmarks {
-            faceView.drawLandmark(landmark.map({ cameraLayer.layerPointConverted(fromCaptureDevicePoint: $0) }))
-        }
+        let normalizedLandmarks = landmarks.map({ $0.map({ cameraLayer.layerPointConverted(fromCaptureDevicePoint: $0) }) })
+        faceView.drawLandmarks(normalizedLandmarks)
     }
 }

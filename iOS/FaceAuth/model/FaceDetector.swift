@@ -16,6 +16,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: Public properties
     
     let session: AVCaptureSession
+    var detectLandmarks = false
     weak var delegate: FaceDetectorDelegate?
     
     // MARK: Private properties
@@ -46,7 +47,15 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
-        let request = VNDetectFaceLandmarksRequest(completionHandler: self.handleFaceRequestCompletion)
+        
+        let request: VNRequest
+        
+        if detectLandmarks {
+            request = VNDetectFaceLandmarksRequest(completionHandler: self.handleFaceRequestCompletion)
+        } else {
+            request = VNDetectFaceRectanglesRequest(completionHandler: self.handleFaceRequestCompletion)
+        }
+        
         try? requestHandler.perform([request], on: cvBuffer, orientation: .right)
     }
     
@@ -68,7 +77,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         // Get landmarks
         var landmarkGroups: [[CGPoint]]
         
-        if let landmarks = observation.landmarks {
+        if detectLandmarks, let landmarks = observation.landmarks {
             let groups = [landmarks.faceContour,
                           landmarks.innerLips,
                           landmarks.leftEye,
@@ -79,7 +88,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
                           landmarks.outerLips,
                           landmarks.rightEye,
                           landmarks.rightEyebrow].flatMap({ $0?.normalizedPoints })
-            
+
             landmarkGroups = groups.map({ $0.map({ CGPoint(x: (1.0 - $0.y) * rect.size.width, y: (1.0 - $0.x) * rect.size.height) }) })
         } else {
             landmarkGroups = []

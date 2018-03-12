@@ -21,6 +21,10 @@ class AppFactory {
         if let camera = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front),
             let input = try? AVCaptureDeviceInput(device: camera) {
             session.addInput(input)
+            
+            try? camera.lockForConfiguration()
+            camera.activeVideoMinFrameDuration = CMTime(value: 1, timescale: 15)
+            camera.unlockForConfiguration()
         }
         
         session.addOutput(AVCaptureVideoDataOutput())

@@ -22,4 +22,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         factory.faceDetector.stopDetecting()
     }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        factory.faceDetector.startDetecting()
+    }
 }

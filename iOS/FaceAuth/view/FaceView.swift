@@ -16,7 +16,11 @@ class FaceView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .clear
+        
+        let layer = shapeLayer
         layer.borderColor = UIColor.red.cgColor
+        layer.strokeColor = UIColor.yellow.cgColor
+        layer.lineWidth = 2.0
         layer.cornerRadius = 5.0
         layer.borderWidth = 4.0
     }
@@ -29,28 +33,28 @@ class FaceView: UIView {
     
     // MARK: Public methods
     
-    func drawLandmark(_ points: [CGPoint]) {
-        guard let firstPoint = points.first else { return }
+    func drawLandmarks(_ landmarks: [[CGPoint]]) {
+        let mutablePath = CGMutablePath()
         
-        let newLayer = CAShapeLayer()
-        newLayer.strokeColor = UIColor.yellow.cgColor
-        newLayer.lineWidth = 2.0
-        
-        let path = UIBezierPath()
-        path.move(to: firstPoint)
-        
-        for point in points {
-            path.addLine(to: point)
-            path.move(to: point)
+        for landmark in landmarks {
+            guard let firstPoint = landmark.first else { return }
+            
+            let path = UIBezierPath()
+            path.move(to: firstPoint)
+            
+            for point in landmark {
+                path.addLine(to: point)
+                path.move(to: point)
+            }
+            
+            path.addLine(to: firstPoint)
+            mutablePath.addPath(path.cgPath)
         }
         
-        path.addLine(to: firstPoint)
-        
-        newLayer.path = path.cgPath
-        shapeLayer.addSublayer(newLayer)
+        shapeLayer.path = mutablePath
     }
     
     func removeAllLandmarks() {
-        shapeLayer.sublayers?.removeAll()
+        shapeLayer.path = nil
     }
 }
