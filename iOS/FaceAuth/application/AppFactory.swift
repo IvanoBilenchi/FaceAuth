@@ -27,7 +27,15 @@ class AppFactory {
             camera.unlockForConfiguration()
         }
         
-        session.addOutput(AVCaptureVideoDataOutput())
+        let output = AVCaptureVideoDataOutput()
+        session.addOutput(output)
+        
+        if let connection = output.connection(with: .video) {
+            connection.videoOrientation = .portrait
+            connection.automaticallyAdjustsVideoMirroring = false
+            connection.isVideoMirrored = true
+        }
+        
         return session
     }()
 }

@@ -40,7 +40,11 @@ class CameraView: UIView {
     // MARK: Public methods
     
     func setFaceBoundingBox(_ boundingBox: CGRect) {
-        let rect = cameraLayer.layerRectConverted(fromMetadataOutputRect: boundingBox)
+        let previewSize = cameraLayer.frame.size
+        let rect = CGRect(x: boundingBox.origin.x * previewSize.width,
+                          y: boundingBox.origin.y * previewSize.height,
+                          width: boundingBox.size.width * previewSize.width,
+                          height: boundingBox.size.height * previewSize.height)
         
         if faceView.alpha == 0.0 {
             faceView.frame = rect

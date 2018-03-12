@@ -53,6 +53,11 @@ class CameraController: UIViewController, FaceDetectorDelegate {
     
     // MARK: FaceDetectorDelegate
     
+    func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation) {
+        cameraView.setFaceBoundingBox(faceObservation.boundingBox)
+        cameraView.setFaceLandmarks(faceObservation.landmarks)
+    }
+    
     func faceDetector(_ faceDetector: FaceDetector, didDetectFaceWithNormalizedBoundingBox boundingBox: CGRect, landmarks: [[CGPoint]]) {
         cameraView.setFaceBoundingBox(boundingBox)
         cameraView.setFaceLandmarks(landmarks)
