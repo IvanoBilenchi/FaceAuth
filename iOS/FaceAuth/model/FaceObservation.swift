@@ -14,15 +14,16 @@ class FaceObservation {
     let boundingBox: CGRect
     let landmarks: [[CGPoint]]
     
-    var image: UIImage {
+    lazy var image: UIImage = {
         let ciImage = CIImage(cvPixelBuffer: buffer).cropped(to: denormalizedBoundingBox)
-        return UIImage(cgImage: CIContext().createCGImage(ciImage, from: ciImage.extent)!,
+        return UIImage(cgImage: FaceObservation.ciContext.createCGImage(ciImage, from: ciImage.extent)!,
                        scale: 1.0,
                        orientation: UIImageOrientation.up)
-    }
+    }()
     
     // Private properties
     
+    static let ciContext = CIContext()
     private let buffer: CVPixelBuffer
     private let bufferWidth: CGFloat
     private let bufferHeight: CGFloat
