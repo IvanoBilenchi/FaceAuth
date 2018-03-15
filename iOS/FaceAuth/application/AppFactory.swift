@@ -10,9 +10,12 @@ class AppFactory {
     
     lazy var rootViewController: UIViewController = cameraController
     
-    lazy var cameraController: CameraController = CameraController(detector: faceDetector)
+    lazy var cameraController: CameraController = CameraController(detector: faceDetector,
+                                                                   recognizer: faceRecognizer)
     
     lazy var faceDetector: FaceDetector = FaceDetector(session: cameraSession)
+    
+    lazy var faceRecognizer: FaceRecognizer = FaceRecognizer()
     
     lazy var cameraSession: AVCaptureSession = {
         let session = AVCaptureSession()

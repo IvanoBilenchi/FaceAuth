@@ -11,26 +11,57 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     // MARK: Private properties
     
     private let detector: FaceDetector
+    private let recognizer: FaceRecognizer
     private var cameraView: CameraView { return view as! CameraView }
     private lazy var photoView: UIImageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 200.0, height: 200.0)))
     
+    private lazy var trainingSwitch: UISwitch = {
+        let mySwitch = UISwitch(frame: .zero)
+        mySwitch.isOn = true
+        mySwitch.addTarget(self, action: #selector(handleSwitch(_:)), for: .valueChanged)
+        return mySwitch
+    }()
+    private lazy var outputLabel: UILabel = {
+        let label = UILabel(frame: .zero)
+        label.font = .boldSystemFont(ofSize: 20.0)
+        return label
+    }()
+    
     // MARK: Lifecycle
     
-    init(detector: FaceDetector) {
+    init(detector: FaceDetector, recognizer: FaceRecognizer) {
         self.detector = detector
+        self.recognizer = recognizer
         super.init(nibName: nil, bundle: nil)
         cameraView.delegate = self
         detector.delegate = self
+        setupSubviews()
+        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    private func setupSubviews() {
+        view.addSubview(trainingSwitch)
+        view.addSubview(outputLabel)
+    }
+    
+    private func setupConstraints() {
+        trainingSwitch.translatesAutoresizingMaskIntoConstraints = false
+        trainingSwitch.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0).isActive = true
+        trainingSwitch.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0).isActive = true
+        
+        outputLabel.translatesAutoresizingMaskIntoConstraints = false
+        outputLabel.topAnchor.constraint(equalTo: trainingSwitch.bottomAnchor, constant: 10.0).isActive = true
+        outputLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0).isActive = true
+    }
+    
     // MARK: UIViewController
     
     override func loadView() {
-        self.view = CameraView(session: detector.session)
+        view = CameraView(session: detector.session)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -56,5 +87,28 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
         if photoView.superview == nil { view.addSubview(photoView) }
         photoView.image = detector.lastObservation?.image
+        
+        if trainingSwitch.isOn {
+            recognizer.addImage(detector.lastObservation!.image)
+        } else {
+            refreshLabel(recognizer.predict(detector.lastObservation!.image))
+        }
+    }
+    
+    // MARK: Private methods
+    
+    private func refreshLabel(_ correct: Bool) {
+        if correct {
+            outputLabel.text = "It's you!"
+            outputLabel.textColor = .green
+        } else {
+            outputLabel.text = "Who are you?"
+            outputLabel.textColor = .red
+        }
+        outputLabel.sizeToFit()
+    }
+    
+    @objc private func handleSwitch(_ uiSwitch: UISwitch) {
+        if !trainingSwitch.isOn { recognizer.train() }
     }
 }
