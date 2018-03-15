@@ -18,7 +18,7 @@ class FaceObservation {
         let ciImage = CIImage(cvPixelBuffer: buffer).cropped(to: denormalizedBoundingBox)
         return UIImage(cgImage: FaceObservation.ciContext.createCGImage(ciImage, from: ciImage.extent)!,
                        scale: 1.0,
-                       orientation: UIImageOrientation.up)
+                       orientation: UIImageOrientation.up).normalizedForFaceRecognition()
     }()
     
     // Private properties
@@ -29,10 +29,19 @@ class FaceObservation {
     private let bufferHeight: CGFloat
     
     private var denormalizedBoundingBox: CGRect {
-        return CGRect(x: boundingBox.origin.x * bufferWidth,
-                      y: (1 - boundingBox.origin.y - boundingBox.size.height) * bufferHeight,
-                      width: boundingBox.size.width * bufferWidth,
-                      height: boundingBox.size.height * bufferHeight)
+        var box = CGRect(x: boundingBox.origin.x * bufferWidth,
+                         y: (1 - boundingBox.origin.y - boundingBox.size.height) * bufferHeight,
+                         width: boundingBox.size.width * bufferWidth,
+                         height: boundingBox.size.height * bufferHeight)
+        
+        // Make the box square
+        if box.size.width > box.size.height {
+            box = box.insetBy(dx: 0.0, dy: (box.size.height - box.size.width) / 2.0)
+        } else {
+            box = box.insetBy(dx: (box.size.width - box.size.height) / 2.0, dy: 0.0)
+        }
+        
+        return box
     }
     
     // Lifecycle

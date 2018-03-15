@@ -34,6 +34,7 @@
 - (instancetype)init {
     if ((self = [super init])) {
         _faceClassifier = cv::face::LBPHFaceRecognizer::create();
+        _faceClassifier->setThreshold(5.0);
         _images = [[NSMutableArray alloc] init];
     }
     return self;
@@ -52,9 +53,7 @@
 }
 
 - (BOOL)predict:(UIImage *)image {
-    double confidence; int label;
-    _faceClassifier->predict([image cvMatGray], label, confidence);
-    return label == 0 && confidence < 10.0;
+    return _faceClassifier->predict([image cvMatNormalized]) == 0;
 }
 
 - (void)serializeModelToFileAtPath:(NSString *)path {
@@ -67,7 +66,7 @@
     std::vector<cv::Mat> images;
     
     for (UIImage *image in _images) {
-        images.push_back([image cvMatGray]);
+        images.push_back([image cvMatNormalized]);
     }
     
     return images;

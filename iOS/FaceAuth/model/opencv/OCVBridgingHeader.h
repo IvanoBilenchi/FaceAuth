@@ -4,3 +4,4 @@
 //
 
 #import "OCVFaceRecognizer.h"
+#import "UIImage+OpenCV.h"

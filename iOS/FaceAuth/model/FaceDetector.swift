@@ -100,6 +100,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
             landmarkGroups = []
         }
         
+        // Notify observation
         let faceObservation = FaceObservation(buffer: lastBuffer, boundingBox: box, landmarks: landmarkGroups)
         lastObservation = faceObservation
         

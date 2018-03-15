@@ -1,7 +1,8 @@
 //
 //  Created by Ivano Bilenchi on 14/03/18.
 //  Copyright © 2018 Ivano Bilenchi. All rights reserved.
-//  Adapted from: https://docs.opencv.org/2.4/doc/tutorials/ios/image_manipulation/image_manipulation.html
+//  Sources:
+//  https://docs.opencv.org/2.4/doc/tutorials/ios/image_manipulation/image_manipulation.html
 //
 
 #import "UIImage+OpenCV.h"
@@ -10,6 +11,31 @@
 #undef NO
 #import <opencv2/opencv.hpp>
 #endif
+
+#pragma mark - Filters
+
+static cv::Mat toGray(cv::Mat mat) {
+    cv::Mat grayMat;
+    
+    if (mat.channels() == 1) {
+        grayMat = mat;
+    } else {
+        grayMat = cv::Mat(mat.rows, mat.cols, CV_8UC1);
+        cv::cvtColor(mat, grayMat, cv::COLOR_BGR2GRAY);
+    }
+    
+    return grayMat;
+}
+
+static cv::Mat applyCLAHE(cv::Mat mat) {
+    cv::Mat result;
+    cv::Ptr<cv::CLAHE> clahe = cv::createCLAHE();
+    clahe->setClipLimit(4);
+    clahe->apply(mat, result);
+    return result;
+}
+
+#pragma mark - Category
 
 @implementation UIImage (OpenCV)
 
@@ -45,39 +71,36 @@
     return finalImage;
 }
 
-- (cv::Mat)cvMat {
+- (cv::Mat)cvMatResizedToSize:(CGSize)size {
     CGColorSpaceRef colorSpace = CGImageGetColorSpace(self.CGImage);
-    CGFloat cols = self.size.width;
-    CGFloat rows = self.size.height;
-    
-    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels (color channels + alpha)
+    cv::Mat cvMat(size.height, size.width, CV_8UC4); // 8 bits per component, 4 channels (color channels + alpha)
     CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,                 // Pointer to  data
-                                                    cols,                       // Width of bitmap
-                                                    rows,                       // Height of bitmap
+                                                    size.width,                 // Width of bitmap
+                                                    size.height,                // Height of bitmap
                                                     8,                          // Bits per component
                                                     cvMat.step[0],              // Bytes per row
                                                     colorSpace,                 // Colorspace
                                                     kCGImageAlphaNoneSkipLast |
                                                     kCGBitmapByteOrderDefault); // Bitmap info flags
     
-    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), self.CGImage);
+    if (!CGSizeEqualToSize(size, self.size)) {
+        CGContextSetInterpolationQuality(contextRef, kCGInterpolationHigh);
+    }
+    
+    CGContextDrawImage(contextRef, CGRectMake(0, 0, size.width, size.height), self.CGImage);
     CGContextRelease(contextRef);
     
     return cvMat;
 }
 
-- (cv::Mat)cvMatGray {
-    cv::Mat cvMat = [self cvMat];
-    cv::Mat grayMat;
-    
-    if (cvMat.channels() == 1) {
-        grayMat = cvMat;
-    } else {
-        grayMat = cv::Mat(cvMat.rows, cvMat.cols, CV_8UC1);
-        cv::cvtColor(cvMat, grayMat, cv::COLOR_BGR2GRAY);
-    }
-    
-    return grayMat;
+- (cv::Mat)cvMat { return [self cvMatResizedToSize:self.size]; }
+
+- (cv::Mat)cvMatGray { return toGray([self cvMat]); }
+
+- (cv::Mat)cvMatNormalized { return applyCLAHE(toGray([self cvMat])); }
+
+- (UIImage *)normalizedForFaceRecognition {
+    return [[self class] imageFromCVMat:[self cvMatNormalized]];
 }
 
 @end
