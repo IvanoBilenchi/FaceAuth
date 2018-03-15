@@ -7,11 +7,20 @@
 
 @interface OCVFaceRecognizer : NSObject
 
-@property (nonatomic, copy, readonly) NSArray<UIImage *> *images;
+#pragma mark - Training
 
+- (UIImage *)lastTrainingImage;
 - (void)addImage:(UIImage *)image;
-- (BOOL)predict:(UIImage *)image;
 - (void)train;
+
+#pragma mark - Prediction
+
+- (UIImage *)lastPredictedImage;
+- (BOOL)predict:(UIImage *)image;
+- (double)confidenceOfPrediction:(UIImage *)image;
+
+#pragma mark - Serialization
+
 - (void)serializeModelToFileAtPath:(NSString *)path;
 
 @end

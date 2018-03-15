@@ -95,12 +95,8 @@ static cv::Mat applyCLAHE(cv::Mat mat) {
 
 - (cv::Mat)cvMat { return [self cvMatResizedToSize:self.size]; }
 
-- (cv::Mat)cvMatGray { return toGray([self cvMat]); }
-
-- (cv::Mat)cvMatNormalized { return applyCLAHE(toGray([self cvMat])); }
-
-- (UIImage *)normalizedForFaceRecognition {
-    return [[self class] imageFromCVMat:[self cvMatNormalized]];
+- (cv::Mat)cvMatPreprocessed {
+    return applyCLAHE(toGray([self cvMatResizedToSize:CGSizeMake(400.0, 400.0)]));
 }
 
 @end

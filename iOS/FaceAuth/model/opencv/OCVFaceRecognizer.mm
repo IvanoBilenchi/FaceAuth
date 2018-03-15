@@ -17,7 +17,8 @@
 @interface OCVFaceRecognizer ()
 {
     cv::Ptr<cv::face::FaceRecognizer> _faceClassifier;
-    NSMutableArray<UIImage *> *_images;
+    std::vector<cv::Mat> _trainingImages;
+    cv::Mat _lastPredictedImage;
 }
 @end
 
@@ -25,51 +26,52 @@
 
 @implementation OCVFaceRecognizer
 
-#pragma mark - Properties
-
-@synthesize images = _images;
-
 #pragma mark - Lifecycle
 
 - (instancetype)init {
     if ((self = [super init])) {
         _faceClassifier = cv::face::LBPHFaceRecognizer::create();
-        _faceClassifier->setThreshold(5.0);
-        _images = [[NSMutableArray alloc] init];
     }
     return self;
 }
 
-#pragma mark - Public methods
+#pragma mark - Training
+
+- (UIImage *)lastTrainingImage {
+    return _trainingImages.empty() ? nil : [UIImage imageFromCVMat:_trainingImages.back()];
+}
 
 - (void)addImage:(UIImage *)image {
-    [_images addObject:image];
+    _trainingImages.push_back([image cvMatPreprocessed]);
 }
 
 - (void)train {
     std::vector<int> labels;
-    for (int i = 0; i < _images.count; ++i) labels.push_back(0);
-    _faceClassifier->train([self imagesVector], labels);
+    for (int i = 0; i < _trainingImages.size(); ++i) labels.push_back(0);
+    _faceClassifier->train(_trainingImages, labels);
+}
+
+#pragma mark - Prediction
+
+- (UIImage *)lastPredictedImage {
+    return _lastPredictedImage.empty() ? nil : [UIImage imageFromCVMat:_lastPredictedImage];
+}
+
+- (double)confidenceOfPrediction:(UIImage *)image {
+    int label; double confidence;
+    _lastPredictedImage = [image cvMatPreprocessed];
+    _faceClassifier->predict(_lastPredictedImage, label, confidence);
+    return label == 0 ? confidence : DBL_MAX;
 }
 
 - (BOOL)predict:(UIImage *)image {
-    return _faceClassifier->predict([image cvMatNormalized]) == 0;
+    return [self confidenceOfPrediction:image] < 15.0;
 }
+
+#pragma mark - Serialization
 
 - (void)serializeModelToFileAtPath:(NSString *)path {
     _faceClassifier->write(path.UTF8String);
-}
-
-#pragma mark - Private methods
-
-- (std::vector<cv::Mat>)imagesVector {
-    std::vector<cv::Mat> images;
-    
-    for (UIImage *image in _images) {
-        images.push_back([image cvMatNormalized]);
-    }
-    
-    return images;
 }
 
 @end

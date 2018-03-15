@@ -18,7 +18,7 @@ class FaceObservation {
         let ciImage = CIImage(cvPixelBuffer: buffer).cropped(to: denormalizedBoundingBox)
         return UIImage(cgImage: FaceObservation.ciContext.createCGImage(ciImage, from: ciImage.extent)!,
                        scale: 1.0,
-                       orientation: UIImageOrientation.up).normalizedForFaceRecognition()
+                       orientation: UIImageOrientation.up)
     }()
     
     // Private properties

@@ -85,13 +85,15 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     // MARK: CameraViewDelegate
     
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
+        guard let image = detector.lastObservation?.image else { return }
         if photoView.superview == nil { view.addSubview(photoView) }
-        photoView.image = detector.lastObservation?.image
         
         if trainingSwitch.isOn {
-            recognizer.addImage(detector.lastObservation!.image)
+            recognizer.add(image)
+            photoView.image = recognizer.lastTrainingImage()
         } else {
-            refreshLabel(recognizer.predict(detector.lastObservation!.image))
+            refreshLabel(recognizer.predict(image))
+            photoView.image = recognizer.lastPredictedImage()
         }
     }
     

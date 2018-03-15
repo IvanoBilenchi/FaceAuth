@@ -5,20 +5,13 @@
 
 #import <UIKit/UIKit.h>
 
-#ifdef __cplusplus
 namespace cv { class Mat; }
-#endif
 
 @interface UIImage (OpenCV)
 
-- (UIImage *)normalizedForFaceRecognition;
-
-#ifdef __cplusplus
 + (UIImage *)imageFromCVMat:(cv::Mat)cvMat;
 
 - (cv::Mat)cvMat;
-- (cv::Mat)cvMatGray;
-- (cv::Mat)cvMatNormalized;
-#endif
+- (cv::Mat)cvMatPreprocessed;
 
 @end
