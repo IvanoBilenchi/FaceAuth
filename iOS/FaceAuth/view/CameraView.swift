@@ -93,9 +93,9 @@ class CameraView: UIView {
         }
     }
     
-    func setFaceLandmarks(_ landmarks: [[CGPoint]]) {
-        let normalizedLandmarks = landmarks.map({ $0.map({ cameraLayer.layerPointConverted(fromCaptureDevicePoint: $0) }) })
-        faceView.drawLandmarks(normalizedLandmarks)
+    func setEyes(left: CGPoint, right: CGPoint) {
+        faceView.drawLandmarks(leftEye: cameraLayer.layerPointConverted(fromCaptureDevicePoint: left),
+                               rightEye: cameraLayer.layerPointConverted(fromCaptureDevicePoint: right))
     }
     
     func setCameraButtonEnabled(_ enabled: Bool) {

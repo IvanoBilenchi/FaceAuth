@@ -11,6 +11,7 @@
 		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
 		CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */; };
 		CC6DEC4E20593C5700624FC1 /* UIImage+OpenCV.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4A20593C5700624FC1 /* UIImage+OpenCV.mm */; };
+		CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = CC724B14205AEA7700043C82 /* OCVFaceObservation.m */; };
 		CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75DB602051ACA800B0B58A /* FaceDetector.swift */; };
 		CC7EA6ED20598EB20091F580 /* FaceRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */; };
 		CCA1B38620519AA600DB8A7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCA1B37E20519AA600DB8A7F /* Assets.xcassets */; };
@@ -31,6 +32,8 @@
 		CC6DEC4720593C5700624FC1 /* OCVFaceRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCVFaceRecognizer.h; sourceTree = "<group>"; };
 		CC6DEC4920593C5700624FC1 /* UIImage+OpenCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+OpenCV.h"; sourceTree = "<group>"; };
 		CC6DEC4A20593C5700624FC1 /* UIImage+OpenCV.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "UIImage+OpenCV.mm"; sourceTree = "<group>"; };
+		CC724B13205AEA7700043C82 /* OCVFaceObservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCVFaceObservation.h; sourceTree = "<group>"; };
+		CC724B14205AEA7700043C82 /* OCVFaceObservation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCVFaceObservation.m; sourceTree = "<group>"; };
 		CC75DB602051ACA800B0B58A /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
 		CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceRecognizer.swift; sourceTree = "<group>"; };
 		CC7EA6EE20598FA60091F580 /* OCVBridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCVBridgingHeader.h; sourceTree = "<group>"; };
@@ -69,6 +72,8 @@
 			isa = PBXGroup;
 			children = (
 				CC7EA6EE20598FA60091F580 /* OCVBridgingHeader.h */,
+				CC724B13205AEA7700043C82 /* OCVFaceObservation.h */,
+				CC724B14205AEA7700043C82 /* OCVFaceObservation.m */,
 				CC6DEC4720593C5700624FC1 /* OCVFaceRecognizer.h */,
 				CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */,
 				CC6DEC4920593C5700624FC1 /* UIImage+OpenCV.h */,
@@ -227,6 +232,7 @@
 			files = (
 				CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */,
 				CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */,
+				CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */,
 				CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */,
 				CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */,
 				CCA1B3902051A24400DB8A7F /* AppFactory.swift in Sources */,

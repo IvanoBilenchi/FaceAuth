@@ -73,7 +73,7 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     
     func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation) {
         cameraView.setFaceBoundingBox(faceObservation.boundingBox)
-        cameraView.setFaceLandmarks(faceObservation.landmarks)
+        cameraView.setEyes(left: faceObservation.leftEye, right: faceObservation.rightEye)
         cameraView.setCameraButtonEnabled(true)
     }
     
@@ -85,19 +85,24 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     // MARK: CameraViewDelegate
     
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
-        guard let image = detector.lastObservation?.image else { return }
+        guard let observation = detector.lastObservation else { return }
         if photoView.superview == nil { view.addSubview(photoView) }
         
         if trainingSwitch.isOn {
-            recognizer.add(image)
+            recognizer.add(observation)
             photoView.image = recognizer.lastTrainingImage()
         } else {
-            refreshLabel(recognizer.predict(image))
+            refreshLabel(recognizer.predict(observation))
             photoView.image = recognizer.lastPredictedImage()
         }
     }
     
     // MARK: Private methods
+    
+    private func refreshLabel(_ confidence: Double) {
+        outputLabel.text = String(format: "Confidence: %.2f", confidence)
+        outputLabel.textColor = .green
+    }
     
     private func refreshLabel(_ correct: Bool) {
         if correct {

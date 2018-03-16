@@ -33,21 +33,11 @@ class FaceView: UIView {
     
     // MARK: Public methods
     
-    func drawLandmarks(_ landmarks: [[CGPoint]]) {
+    func drawLandmarks(leftEye: CGPoint, rightEye: CGPoint) {
         let mutablePath = CGMutablePath()
         
-        for landmark in landmarks {
-            guard let firstPoint = landmark.first else { return }
-            
-            let path = UIBezierPath()
-            path.move(to: firstPoint)
-            
-            for point in landmark {
-                path.addLine(to: point)
-                path.move(to: point)
-            }
-            
-            path.addLine(to: firstPoint)
+        for eye in [leftEye, rightEye] {
+            let path = UIBezierPath(ovalIn: CGRect(center: eye, size: CGSize(width: 5.0, height: 5.0)))
             mutablePath.addPath(path.cgPath)
         }
         
@@ -56,5 +46,14 @@ class FaceView: UIView {
     
     func removeAllLandmarks() {
         shapeLayer.path = nil
+    }
+}
+
+private extension CGRect {
+    init(center: CGPoint, size: CGSize) {
+        var origin = center
+        origin.x -= size.width / 2.0
+        origin.y -= size.height / 2.0
+        self.init(origin: origin, size: size)
     }
 }

@@ -10,7 +10,12 @@
 #endif
 
 #import "OCVFaceRecognizer.h"
+#import "OCVFaceObservation.h"
 #import "UIImage+OpenCV.h"
+
+#pragma mark - Constants
+
+static double const kRecognitionThreshold = 20.0;
 
 #pragma mark - Extension
 
@@ -41,8 +46,10 @@
     return _trainingImages.empty() ? nil : [UIImage imageFromCVMat:_trainingImages.back()];
 }
 
-- (void)addImage:(UIImage *)image {
-    _trainingImages.push_back([image cvMatPreprocessed]);
+- (void)addFaceObservation:(OCVFaceObservation *)observation {
+    _trainingImages.push_back([observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
+                                                                   faceAngle:observation.angle
+                                                                 eyeDistance:observation.eyeDistance]);
 }
 
 - (void)train {
@@ -57,15 +64,17 @@
     return _lastPredictedImage.empty() ? nil : [UIImage imageFromCVMat:_lastPredictedImage];
 }
 
-- (double)confidenceOfPrediction:(UIImage *)image {
+- (double)confidenceOfPrediction:(OCVFaceObservation *)observation {
     int label; double confidence;
-    _lastPredictedImage = [image cvMatPreprocessed];
+    _lastPredictedImage = [observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
+                                                               faceAngle:observation.angle
+                                                             eyeDistance:observation.eyeDistance];
     _faceClassifier->predict(_lastPredictedImage, label, confidence);
     return label == 0 ? confidence : DBL_MAX;
 }
 
-- (BOOL)predict:(UIImage *)image {
-    return [self confidenceOfPrediction:image] < 15.0;
+- (BOOL)predict:(OCVFaceObservation *)observation {
+    return [self confidenceOfPrediction:observation] < kRecognitionThreshold;
 }
 
 #pragma mark - Serialization

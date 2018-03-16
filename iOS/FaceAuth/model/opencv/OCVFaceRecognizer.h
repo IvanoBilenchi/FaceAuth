@@ -5,22 +5,28 @@
 
 #import <UIKit/UIKit.h>
 
+@class OCVFaceObservation;
+
+NS_ASSUME_NONNULL_BEGIN;
+
 @interface OCVFaceRecognizer : NSObject
 
 #pragma mark - Training
 
 - (UIImage *)lastTrainingImage;
-- (void)addImage:(UIImage *)image;
+- (void)addFaceObservation:(OCVFaceObservation *)observation;
 - (void)train;
 
 #pragma mark - Prediction
 
 - (UIImage *)lastPredictedImage;
-- (BOOL)predict:(UIImage *)image;
-- (double)confidenceOfPrediction:(UIImage *)image;
+- (BOOL)predict:(OCVFaceObservation *)observation;
+- (double)confidenceOfPrediction:(OCVFaceObservation *)observation;
 
 #pragma mark - Serialization
 
 - (void)serializeModelToFileAtPath:(NSString *)path;
 
 @end
+
+NS_ASSUME_NONNULL_END;

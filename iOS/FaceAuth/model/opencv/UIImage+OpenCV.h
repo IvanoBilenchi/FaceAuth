@@ -10,8 +10,6 @@ namespace cv { class Mat; }
 @interface UIImage (OpenCV)
 
 + (UIImage *)imageFromCVMat:(cv::Mat)cvMat;
-
-- (cv::Mat)cvMat;
-- (cv::Mat)cvMatPreprocessed;
+- (cv::Mat)faceRecCVMatWithBoundingBox:(CGRect)boundingBox faceAngle:(CGFloat)faceAngle eyeDistance:(CGFloat)eyeDistance;
 
 @end

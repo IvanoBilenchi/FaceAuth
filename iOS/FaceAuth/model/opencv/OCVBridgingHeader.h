@@ -3,4 +3,5 @@
 //  Copyright © 2018 Ivano Bilenchi. All rights reserved.
 //
 
+#import "OCVFaceObservation.h"
 #import "OCVFaceRecognizer.h"
