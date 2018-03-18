@@ -14,9 +14,9 @@
 
 #pragma mark - Constants
 
-static int const kBlurKernelLength = 7;
-static CGFloat const kImageMaxSize = 150.0;
-static CGFloat const kEyeDistanceMultiplier = 1.75;
+static int const kBlurKernelLength = 3;
+static CGFloat const kImageMaxSize = 300.0;
+static CGFloat const kEyeDistanceMultiplier = 2.0;
 
 #pragma mark - Filters
 
@@ -43,10 +43,19 @@ static cv::Mat applyCLAHE(cv::Mat mat) {
 
 static cv::Mat blur(cv::Mat mat) {
     cv::Mat result;
+    cv::bilateralFilter(mat, result, kBlurKernelLength, 50, 50);
+    return result;
+}
+
+static cv::Mat maskedToEllpise(cv::Mat mat, int hSize) {
+    cv::Mat mask(mat.rows, mat.cols, CV_8UC1, cv::Scalar(0, 0, 0));
+    cv::Point ellipseCenter = cv::Point(mat.cols / 2, mat.rows / 2);
+    cv::Size ellipseSize = cv::Size(hSize / 2, mat.rows / 2);
     
-    for (int i = 1; i < kBlurKernelLength; i = i+2) {
-        cv::bilateralFilter(mat, result, i, i*2, i/2);
-    }
+    cv::ellipse(mask, ellipseCenter, ellipseSize, 0.0, 0.0, 360.0, cv::Scalar(255, 255, 255), -1, 8);
+    
+    cv::Mat result;
+    cv::bitwise_and(mat, mask, result);
     
     return result;
 }
@@ -104,14 +113,30 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
 }
 
 - (cv::Mat)faceRecCVMatWithBoundingBox:(CGRect)boundingBox faceAngle:(CGFloat)faceAngle eyeDistance:(CGFloat)eyeDistance {
+    // Crop and align
     UIImage *image = [[self cropped:denormalizedRect(boundingBox, self.size)] rotated:-faceAngle];
-    return applyCLAHE(blur(toGray([image cvMatResized:CGSizeMake(kImageMaxSize, kImageMaxSize)
-                                              clipped:CGSizeMake(kImageMaxSize * eyeDistance * kEyeDistanceMultiplier / boundingBox.size.width, kImageMaxSize)])));
+    
+    // Resize
+    cv::Mat mat = [image cvMatResized:CGSizeMake(kImageMaxSize, kImageMaxSize)];
+    
+    // To grayscale
+    mat = toGray(mat);
+    
+    // Normalize histogram
+    mat = applyCLAHE(mat);
+    
+    // Blur
+    mat = blur(mat);
+    
+    // Remove background noise
+    mat = maskedToEllpise(mat, (int)(kImageMaxSize * eyeDistance * kEyeDistanceMultiplier / boundingBox.size.width));
+    
+    return mat;
 }
 
 #pragma mark - Private methods
 
-- (cv::Mat)cvMatResized:(CGSize)size clipped:(CGSize)clippedSize {
+- (cv::Mat)cvMatResized:(CGSize)size {
     cv::Mat cvMat(size.height, size.width, CV_8UC4); // 8 bits per component, 4 channels (color channels + alpha)
     CGContextRef ctx = CGBitmapContextCreate(cvMat.data,                            // Pointer to  data
                                              size.width,                            // Width of bitmap
@@ -125,13 +150,6 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
     CGContextSetShouldAntialias(ctx, YES);
     CGContextSetAllowsAntialiasing(ctx, YES);
     CGContextSetInterpolationQuality(ctx, kCGInterpolationHigh);
-    
-    CGFloat centerX = (size.width - clippedSize.width) / 2.0;
-    CGFloat centerY = (size.height - clippedSize.height) / 2.0;
-    CGPathRef path = CGPathCreateWithEllipseInRect(CGRectMake(centerX, centerY, clippedSize.width, clippedSize.height), NULL);
-    CGContextAddPath(ctx, path);
-    CGContextClip(ctx);
-    CGPathRelease(path);
     
     CGRect drawRect = CGRectMake(0.0, 0.0, size.width, size.height);
     CGContextDrawImage(ctx, drawRect, self.CGImage);

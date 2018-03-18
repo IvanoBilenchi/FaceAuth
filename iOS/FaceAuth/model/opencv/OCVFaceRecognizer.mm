@@ -15,7 +15,7 @@
 
 #pragma mark - Constants
 
-static double const kRecognitionThreshold = 20.0;
+static double const kRecognitionThreshold = 15.0;
 
 #pragma mark - Extension
 
