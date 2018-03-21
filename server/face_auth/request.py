@@ -1,4 +1,5 @@
 import os
+from contextlib import suppress
 from flask import Request as FlaskRequest
 from typing import Optional
 from werkzeug.datastructures import FileStorage
@@ -22,11 +23,8 @@ class Request:
         return True if self.email and self.password and self._file else False
 
     def save_file(self, file_path: str) -> None:
-        try:
-            os.remove(file_path)
-        except OSError:
-            pass
-
+        with suppress(FileNotFoundError):
+            os.unlink(file_path)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self._file.save(file_path)
 

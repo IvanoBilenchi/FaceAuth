@@ -26,7 +26,7 @@ def shared_app() -> Flask:
 def database() -> Database:
     db: Database = getattr(g, '_database', None)
     if not db:
-        db = g._database = Database(config.DB_FILE_PATH)
+        db = g._database = Database(config.DB_FILE_PATH, config.DB_SCHEMA_PATH)
         db.connect()
     return db
 
