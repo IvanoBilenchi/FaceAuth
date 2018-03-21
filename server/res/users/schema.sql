@@ -1,0 +1,13 @@
+BEGIN;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+  uid INTEGER PRIMARY KEY AUTOINCREMENT,
+  email VARCHAR(40) NOT NULL UNIQUE,
+  password CHAR(60) NOT NULL,
+  name VARCHAR(40) NOT NULL,
+  description TEXT
+);
+
+CREATE UNIQUE INDEX users_email_idx ON users (email);
+COMMIT;
