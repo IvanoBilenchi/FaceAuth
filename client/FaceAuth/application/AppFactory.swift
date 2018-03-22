@@ -8,10 +8,7 @@ import UIKit
 
 class AppFactory {
     
-    lazy var rootViewController: UIViewController = cameraController
-    
-    lazy var cameraController: CameraController = CameraController(detector: faceDetector,
-                                                                   recognizer: faceRecognizer)
+    // MARK: Model
     
     lazy var faceDetector: FaceDetector = FaceDetector(session: cameraSession)
     
@@ -40,5 +37,23 @@ class AppFactory {
         }
         
         return session
+    }()
+    
+    // MARK: View
+    
+    lazy var loginView: LoginView = LoginView(minUserNameLength: Config.Security.minUserNameLength,
+                                              minPasswordLength: Config.Security.minPasswordLength)
+    
+    // MARK: Controller
+    
+    lazy var rootViewController: UIViewController = loginController
+    
+    lazy var cameraController: CameraController = CameraController(detector: faceDetector,
+                                                                   recognizer: faceRecognizer)
+    
+    lazy var loginController: LoginController = {
+        let controller = LoginController(loginView: loginView)
+        loginView.delegate = controller
+        return controller
     }()
 }
