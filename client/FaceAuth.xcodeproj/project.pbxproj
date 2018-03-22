@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		CC214F6E2063B7AB0034C722 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6D2063B7AB0034C722 /* AppConfig.swift */; };
 		CC214F702063BE9D0034C722 /* AppWireframe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6F2063BE9D0034C722 /* AppWireframe.swift */; };
+		CC214F722063FC130034C722 /* AuthServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F712063FC130034C722 /* AuthServerAPI.swift */; };
+		CC214F742063FC790034C722 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F732063FC790034C722 /* Credentials.swift */; };
 		CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */; };
 		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
 		CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */; };
@@ -31,6 +33,8 @@
 /* Begin PBXFileReference section */
 		CC214F6D2063B7AB0034C722 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		CC214F6F2063BE9D0034C722 /* AppWireframe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWireframe.swift; sourceTree = "<group>"; };
+		CC214F712063FC130034C722 /* AuthServerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServerAPI.swift; sourceTree = "<group>"; };
+		CC214F732063FC790034C722 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceObservation.swift; sourceTree = "<group>"; };
 		CC5CAF1F2056E2610096D17B /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CC6DEC3D20593B8300624FC1 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = External/opencv2.framework; sourceTree = "<group>"; };
@@ -164,6 +168,8 @@
 			isa = PBXGroup;
 			children = (
 				CC6DEC4520593C5700624FC1 /* opencv */,
+				CC214F712063FC130034C722 /* AuthServerAPI.swift */,
+				CC214F732063FC790034C722 /* Credentials.swift */,
 				CC75DB602051ACA800B0B58A /* FaceDetector.swift */,
 				CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */,
 				CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */,
@@ -247,8 +253,10 @@
 				CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */,
 				CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */,
 				CCB6771C2062CEEE00021868 /* LoginController.swift in Sources */,
+				CC214F742063FC790034C722 /* Credentials.swift in Sources */,
 				CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */,
 				CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */,
+				CC214F722063FC130034C722 /* AuthServerAPI.swift in Sources */,
 				CC214F6E2063B7AB0034C722 /* AppConfig.swift in Sources */,
 				CCA1B3902051A24400DB8A7F /* AppFactory.swift in Sources */,
 				CCA1B38E20519C9300DB8A7F /* CameraView.swift in Sources */,

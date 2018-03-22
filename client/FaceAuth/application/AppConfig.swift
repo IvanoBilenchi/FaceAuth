@@ -10,4 +10,10 @@ struct Config {
         static let minUserNameLength: UInt = 8
         static let minPasswordLength: UInt = 8
     }
+    
+    struct Server {
+        static let name = "MacBook-Pro-di-Ivano.local"
+        static let port: UInt = 5000
+        static let useHTTPS = false
+    }
 }
