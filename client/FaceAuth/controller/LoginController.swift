@@ -6,7 +6,7 @@
 import UIKit
 
 protocol LoginWireframe {
-    func showCameraController(withMode mode: CameraController.Mode)
+    func showFaceController(withMode mode: FaceController.Mode)
 }
 
 class LoginController: UIViewController, LoginViewDelegate {
@@ -53,11 +53,11 @@ class LoginController: UIViewController, LoginViewDelegate {
     
     func loginView(_ view: LoginView, didPressLoginButtonWithUserName userName: String, password: String) {
         print("Login: \(userName) - \(password)")
-        wireframe.showCameraController(withMode: .recognize)
+        wireframe.showFaceController(withMode: .recognize)
     }
     
     func loginView(_ view: LoginView, didPressRegisterButtonWithUserName userName: String, password: String) {
         print("Register: \(userName) - \(password)")
-        wireframe.showCameraController(withMode: .enroll)
+        wireframe.showFaceController(withMode: .enroll)
     }
 }

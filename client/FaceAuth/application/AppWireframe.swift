@@ -19,8 +19,8 @@ class AppWireframe: LoginWireframe {
     
     // MARK: LoginWireframe
     
-    func showCameraController(withMode mode: CameraController.Mode) {
-        f.cameraController.mode = mode
-        f.navigationController.pushViewController(f.cameraController, animated: true)
+    func showFaceController(withMode mode: FaceController.Mode) {
+        f.faceController.mode = mode
+        f.navigationController.pushViewController(f.faceController, animated: true)
     }
 }

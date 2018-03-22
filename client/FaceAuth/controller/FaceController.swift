@@ -6,7 +6,7 @@
 import AVFoundation
 import UIKit
 
-class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
+class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
     
     enum Mode {
         case enroll

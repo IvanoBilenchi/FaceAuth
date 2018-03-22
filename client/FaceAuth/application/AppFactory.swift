@@ -50,8 +50,8 @@ class AppFactory {
     
     lazy var navigationController: UINavigationController = UINavigationController(rootViewController: loginController)
     
-    lazy var cameraController: CameraController = CameraController(detector: faceDetector,
-                                                                   recognizer: faceRecognizer)
+    lazy var faceController: FaceController = FaceController(detector: faceDetector,
+                                                               recognizer: faceRecognizer)
     
     lazy var loginController: LoginController = {
         let controller = LoginController(loginView: loginView, wireframe: wireframe)
