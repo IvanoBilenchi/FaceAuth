@@ -10,12 +10,12 @@ class Request:
 
     # Public fields
 
-    email: Optional[str]
-    password: Optional[str]
+    email: Optional[str] = None
+    password: Optional[str] = None
 
     # Private fields
 
-    _file: Optional[FileStorage]
+    _file: Optional[FileStorage] = None
 
     # Public methods
 
@@ -49,8 +49,8 @@ class RegistrationRequest(Request):
 
     # Public fields
 
-    name: Optional[str]
-    description: Optional[str]
+    name: Optional[str] = None
+    description: Optional[str] = None
 
     def __init__(self, request: FlaskRequest) -> None:
         self.email = request.form.get('user')
@@ -63,5 +63,5 @@ class RegistrationRequest(Request):
         if model_file and model_file.filename.endswith('.yml'):
             self._file = model_file
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return super(RegistrationRequest, self).is_valid() and self.name
