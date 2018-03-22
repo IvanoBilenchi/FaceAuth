@@ -6,6 +6,15 @@
 import AVFoundation
 import UIKit
 
+protocol FaceControllerDelegate: class {
+    func faceController(_ faceController: FaceController, didCaptureFace faceImage: UIImage)
+    func faceController(_ faceController: FaceController, didTrainModel modelPath: String)
+}
+
+protocol FaceWireframe: class {
+    func showLoginController()
+}
+
 class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
     
     enum Mode {
@@ -14,6 +23,8 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     }
     
     // MARK: Public properties
+    
+    weak var delegate: FaceControllerDelegate?
     
     var mode: Mode = .recognize {
         didSet {
@@ -34,6 +45,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     
     private let detector: FaceDetector
     private let recognizer: FaceRecognizer
+    private weak var wireframe: FaceWireframe?
     
     private var cameraView: CameraView { return view as! CameraView }
     
@@ -47,9 +59,10 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     
     // MARK: Lifecycle
     
-    init(detector: FaceDetector, recognizer: FaceRecognizer) {
+    init(detector: FaceDetector, recognizer: FaceRecognizer, wireframe: FaceWireframe) {
         self.detector = detector
         self.recognizer = recognizer
+        self.wireframe = wireframe
         super.init(nibName: nil, bundle: nil)
         cameraView.delegate = self
         detector.delegate = self
@@ -106,23 +119,18 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
             recognizer.add(observation)
             photoView.image = recognizer.lastTrainingImage()
         } else {
-            attemptLogin(withObservation: observation)
+            delegate?.faceController(self, didCaptureFace: FaceRecognizer.processedImage(from: observation))
+            wireframe?.showLoginController()
         }
     }
     
-    // MARK: Private methods
+    // MARK: Handlers
     
-    private func attemptLogin(withObservation observation: FaceObservation) {
-        print("Attempt login.")
-    }
-    
-    private func enroll() {
+    @objc private func handleDoneButton() {
         recognizer.train()
-        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
-        recognizer.serializeModelToFile(atPath: path)
-        
-        print("Perform enrollment.")
+        let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
+        recognizer.serializeModelToFile(atPath: modelPath)
+        delegate?.faceController(self, didTrainModel: modelPath)
+        wireframe?.showLoginController()
     }
-    
-    @objc private func handleDoneButton() { enroll() }
 }

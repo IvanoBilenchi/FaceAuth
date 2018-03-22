@@ -5,7 +5,7 @@
 
 import Foundation
 
-class AppWireframe: LoginWireframe {
+class AppWireframe: LoginWireframe, FaceWireframe {
     
     // MARK: Private properties
     
@@ -22,5 +22,11 @@ class AppWireframe: LoginWireframe {
     func showFaceController(withMode mode: FaceController.Mode) {
         f.faceController.mode = mode
         f.navigationController.pushViewController(f.faceController, animated: true)
+    }
+    
+    // MARK: FaceWireframe
+    
+    func showLoginController() {
+        f.navigationController.popViewController(animated: true)
     }
 }

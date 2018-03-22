@@ -5,20 +5,24 @@
 
 import UIKit
 
-protocol LoginWireframe {
+protocol LoginWireframe: class {
     func showFaceController(withMode mode: FaceController.Mode)
 }
 
-class LoginController: UIViewController, LoginViewDelegate {
+class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelegate {
     
     // MARK: Private properties
     
+    private let api: AuthServerAPI
     private let loginView: LoginView
-    private let wireframe: LoginWireframe
+    private weak var wireframe: LoginWireframe?
+    
+    private var credentialsBuilder: CredentialsBuilder?
     
     // MARK: Lifecycle
     
-    init(loginView: LoginView, wireframe: LoginWireframe) {
+    init(api: AuthServerAPI, loginView: LoginView, wireframe: LoginWireframe) {
+        self.api = api
         self.loginView = loginView
         self.wireframe = wireframe
         super.init(nibName: nil, bundle: nil)
@@ -52,12 +56,32 @@ class LoginController: UIViewController, LoginViewDelegate {
     // MARK: LoginViewDelegate
     
     func loginView(_ view: LoginView, didPressLoginButtonWithUserName userName: String, password: String) {
-        print("Login: \(userName) - \(password)")
-        wireframe.showFaceController(withMode: .recognize)
+        credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
+        wireframe?.showFaceController(withMode: .recognize)
     }
     
     func loginView(_ view: LoginView, didPressRegisterButtonWithUserName userName: String, password: String) {
-        print("Register: \(userName) - \(password)")
-        wireframe.showFaceController(withMode: .enroll)
+        credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
+            .set(name: "Ivano Bilenchi") // TODO: remove
+            .set(description: "Software engineer") // TODO: remove
+        wireframe?.showFaceController(withMode: .enroll)
+    }
+    
+    // MARK: FaceControllerDelegate
+    
+    func faceController(_ faceController: FaceController, didTrainModel modelPath: String) {
+        guard let credentialsBuilder = credentialsBuilder,
+            let credentials = credentialsBuilder.set(modelPath: modelPath).buildRegistrationCredentials() else {
+                return
+        }
+        api.register(withCredentials: credentials)
+    }
+    
+    func faceController(_ faceController: FaceController, didCaptureFace faceImage: UIImage) {
+        guard let credentialsBuilder = credentialsBuilder,
+            let credentials = credentialsBuilder.set(image: faceImage).buildLoginCredentials() else {
+                return
+        }
+        api.login(withCredentials: credentials)
     }
 }

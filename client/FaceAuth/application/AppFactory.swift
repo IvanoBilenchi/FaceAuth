@@ -10,6 +10,10 @@ class AppFactory {
     
     // MARK: Model
     
+    lazy var authServerAPI: AuthServerAPI = AuthServerAPI(serverName: Config.Server.name,
+                                                          port: Config.Server.port,
+                                                          useHTTPS: Config.Server.useHTTPS)
+    
     lazy var faceDetector: FaceDetector = FaceDetector(session: cameraSession)
     
     lazy var faceRecognizer: FaceRecognizer = FaceRecognizer()
@@ -50,11 +54,14 @@ class AppFactory {
     
     lazy var navigationController: UINavigationController = UINavigationController(rootViewController: loginController)
     
-    lazy var faceController: FaceController = FaceController(detector: faceDetector,
-                                                               recognizer: faceRecognizer)
+    lazy var faceController: FaceController = {
+        let controller = FaceController(detector: faceDetector, recognizer: faceRecognizer, wireframe: wireframe)
+        controller.delegate = loginController
+        return controller
+    }()
     
     lazy var loginController: LoginController = {
-        let controller = LoginController(loginView: loginView, wireframe: wireframe)
+        let controller = LoginController(api: authServerAPI, loginView: loginView, wireframe: wireframe)
         loginView.delegate = controller
         return controller
     }()
