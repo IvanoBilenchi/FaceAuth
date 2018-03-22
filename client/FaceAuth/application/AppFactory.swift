@@ -46,14 +46,20 @@ class AppFactory {
     
     // MARK: Controller
     
-    lazy var rootViewController: UIViewController = loginController
+    lazy var rootViewController: UIViewController = navigationController
+    
+    lazy var navigationController: UINavigationController = UINavigationController(rootViewController: loginController)
     
     lazy var cameraController: CameraController = CameraController(detector: faceDetector,
                                                                    recognizer: faceRecognizer)
     
     lazy var loginController: LoginController = {
-        let controller = LoginController(loginView: loginView)
+        let controller = LoginController(loginView: loginView, wireframe: wireframe)
         loginView.delegate = controller
         return controller
     }()
+    
+    // MARK: Wireframe
+    
+    lazy var wireframe: AppWireframe = AppWireframe(appFactory: self)
 }

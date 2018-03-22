@@ -8,23 +8,41 @@ import UIKit
 
 class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
     
+    enum Mode {
+        case enroll
+        case recognize
+    }
+    
+    // MARK: Public properties
+    
+    var mode: Mode = .recognize {
+        didSet {
+            if mode == .enroll {
+                photoView.image = nil
+                photoView.isHidden = false
+                navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .done,
+                                                                         target: self,
+                                                                         action: #selector(handleDoneButton))
+            } else {
+                photoView.isHidden = true
+                navigationItem.rightBarButtonItem = nil
+            }
+        }
+    }
+    
     // MARK: Private properties
     
     private let detector: FaceDetector
     private let recognizer: FaceRecognizer
-    private var cameraView: CameraView { return view as! CameraView }
-    private lazy var photoView: UIImageView = UIImageView(frame: CGRect(origin: .zero, size: CGSize(width: 200.0, height: 200.0)))
     
-    private lazy var trainingSwitch: UISwitch = {
-        let mySwitch = UISwitch(frame: .zero)
-        mySwitch.isOn = true
-        mySwitch.addTarget(self, action: #selector(handleSwitch(_:)), for: .valueChanged)
-        return mySwitch
-    }()
-    private lazy var outputLabel: UILabel = {
-        let label = UILabel(frame: .zero)
-        label.font = .boldSystemFont(ofSize: 20.0)
-        return label
+    private var cameraView: CameraView { return view as! CameraView }
+    
+    private lazy var photoView: UIImageView = {
+        let imgView = UIImageView(frame: .zero)
+        imgView.backgroundColor = .black
+        imgView.layer.borderWidth = 3.0
+        imgView.layer.borderColor = UIColor.white.cgColor
+        return imgView
     }()
     
     // MARK: Lifecycle
@@ -44,18 +62,15 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     }
     
     private func setupSubviews() {
-        view.addSubview(trainingSwitch)
-        view.addSubview(outputLabel)
+        view.addSubview(photoView)
     }
     
     private func setupConstraints() {
-        trainingSwitch.translatesAutoresizingMaskIntoConstraints = false
-        trainingSwitch.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10.0).isActive = true
-        trainingSwitch.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0).isActive = true
-        
-        outputLabel.translatesAutoresizingMaskIntoConstraints = false
-        outputLabel.topAnchor.constraint(equalTo: trainingSwitch.bottomAnchor, constant: 10.0).isActive = true
-        outputLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -10.0).isActive = true
+        photoView.translatesAutoresizingMaskIntoConstraints = false
+        photoView.widthAnchor.constraint(equalToConstant: 100.0).isActive = true
+        photoView.heightAnchor.constraint(equalTo: photoView.widthAnchor).isActive = true
+        photoView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        photoView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
     }
     
     // MARK: UIViewController
@@ -86,36 +101,28 @@ class CameraController: UIViewController, FaceDetectorDelegate, CameraViewDelega
     
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
         guard let observation = detector.lastObservation else { return }
-        if photoView.superview == nil { view.addSubview(photoView) }
         
-        if trainingSwitch.isOn {
+        if mode == .enroll {
             recognizer.add(observation)
             photoView.image = recognizer.lastTrainingImage()
         } else {
-            refreshLabel(recognizer.predict(observation))
-            photoView.image = recognizer.lastPredictedImage()
+            attemptLogin(withObservation: observation)
         }
     }
     
     // MARK: Private methods
     
-    private func refreshLabel(_ confidence: Double) {
-        outputLabel.text = String(format: "Confidence: %.2f", confidence)
-        outputLabel.textColor = .green
+    private func attemptLogin(withObservation observation: FaceObservation) {
+        print("Attempt login.")
     }
     
-    private func refreshLabel(_ correct: Bool) {
-        if correct {
-            outputLabel.text = "It's you!"
-            outputLabel.textColor = .green
-        } else {
-            outputLabel.text = "Who are you?"
-            outputLabel.textColor = .red
-        }
-        outputLabel.sizeToFit()
+    private func enroll() {
+        recognizer.train()
+        let path = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
+        recognizer.serializeModelToFile(atPath: path)
+        
+        print("Perform enrollment.")
     }
     
-    @objc private func handleSwitch(_ uiSwitch: UISwitch) {
-        if !trainingSwitch.isOn { recognizer.train() }
-    }
+    @objc private func handleDoneButton() { enroll() }
 }

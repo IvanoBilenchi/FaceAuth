@@ -40,6 +40,18 @@ static double const kRecognitionThreshold = 15.0;
     return self;
 }
 
+#pragma mark - Manipulation
+
++ (cv::Mat)processedMatFromObservation:(OCVFaceObservation *)observation {
+    return [observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
+                                                faceAngle:observation.angle
+                                              eyeDistance:observation.eyeDistance];
+}
+
++ (UIImage *)processedImageFromObservation:(OCVFaceObservation *)observation {
+    return [UIImage imageFromCVMat:[self processedMatFromObservation:observation]];
+}
+
 #pragma mark - Training
 
 - (UIImage *)lastTrainingImage {
@@ -47,9 +59,7 @@ static double const kRecognitionThreshold = 15.0;
 }
 
 - (void)addFaceObservation:(OCVFaceObservation *)observation {
-    _trainingImages.push_back([observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
-                                                                   faceAngle:observation.angle
-                                                                 eyeDistance:observation.eyeDistance]);
+    _trainingImages.push_back([[self class] processedMatFromObservation:observation]);
 }
 
 - (void)train {
@@ -66,9 +76,7 @@ static double const kRecognitionThreshold = 15.0;
 
 - (double)confidenceOfPrediction:(OCVFaceObservation *)observation {
     int label; double confidence;
-    _lastPredictedImage = [observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
-                                                               faceAngle:observation.angle
-                                                             eyeDistance:observation.eyeDistance];
+    _lastPredictedImage = [[self class] processedMatFromObservation:observation];
     _faceClassifier->predict(_lastPredictedImage, label, confidence);
     return label == 0 ? confidence : DBL_MAX;
 }

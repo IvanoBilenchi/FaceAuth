@@ -11,6 +11,10 @@ NS_ASSUME_NONNULL_BEGIN;
 
 @interface OCVFaceRecognizer : NSObject
 
+#pragma mark - Manipulation
+
++ (UIImage *)processedImageFromObservation:(OCVFaceObservation *)observation;
+
 #pragma mark - Training
 
 - (UIImage *)lastTrainingImage;

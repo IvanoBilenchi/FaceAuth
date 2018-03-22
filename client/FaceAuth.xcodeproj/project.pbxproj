@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC214F6E2063B7AB0034C722 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6D2063B7AB0034C722 /* AppConfig.swift */; };
+		CC214F702063BE9D0034C722 /* AppWireframe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6F2063BE9D0034C722 /* AppWireframe.swift */; };
 		CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */; };
 		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
 		CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		CC214F6D2063B7AB0034C722 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		CC214F6F2063BE9D0034C722 /* AppWireframe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWireframe.swift; sourceTree = "<group>"; };
 		CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceObservation.swift; sourceTree = "<group>"; };
 		CC5CAF1F2056E2610096D17B /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CC6DEC3D20593B8300624FC1 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = External/opencv2.framework; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				CC214F6D2063B7AB0034C722 /* AppConfig.swift */,
 				CCA1B38320519AA600DB8A7F /* AppDelegate.swift */,
 				CCA1B38F2051A24400DB8A7F /* AppFactory.swift */,
+				CC214F6F2063BE9D0034C722 /* AppWireframe.swift */,
 			);
 			path = application;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC214F702063BE9D0034C722 /* AppWireframe.swift in Sources */,
 				CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */,
 				CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */,
 				CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */,

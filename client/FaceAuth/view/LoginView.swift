@@ -34,32 +34,27 @@ class LoginView: UIView, UITextFieldDelegate {
     }()
     
     private lazy var userNameField: UITextField = {
-        let field = UITextField.loginViewDefault()
+        let field = UITextField.defaultField(forLoginView: self)
         field.placeholder = "Username"
-        field.addTarget(self, action: #selector(handleFieldsChange(_:)), for: .editingChanged)
         return field
     }()
     
     private lazy var passwordField: UITextField = {
-        let field = UITextField.loginViewDefault()
-        field.textContentType = UITextContentType.password
+        let field = UITextField.defaultField(forLoginView: self)
         field.isSecureTextEntry = true
         field.placeholder = "Password"
-        field.addTarget(self, action: #selector(handleFieldsChange(_:)), for: .editingChanged)
         return field
     }()
     
     private lazy var loginButton: UIButton = {
-        let btn = UIButton.loginViewDefault()
+        let btn = UIButton.defaultButton(forLoginView: self)
         btn.setTitle("Login", for: .normal)
-        btn.addTarget(self, action: #selector(handleLoginPress), for: .touchUpInside)
         return btn
     }()
     
     private lazy var registerButton: UIButton = {
-        let btn = UIButton.loginViewDefault()
+        let btn = UIButton.defaultButton(forLoginView: self)
         btn.setTitle("Register", for: .normal)
-        btn.addTarget(self, action: #selector(handleRegisterPress), for: .touchUpInside)
         return btn
     }()
     
@@ -89,7 +84,7 @@ class LoginView: UIView, UITextFieldDelegate {
         
         form.translatesAutoresizingMaskIntoConstraints = false
         form.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        form.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        form.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -20.0).isActive = true
         form.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
         
         userNameField.translatesAutoresizingMaskIntoConstraints = false
@@ -122,17 +117,17 @@ class LoginView: UIView, UITextFieldDelegate {
     
     // MARK: Handlers
     
-    @objc private func handleLoginPress() {
-        delegate?.loginView(self, didPressLoginButtonWithUserName: userNameField.text!,
-                            password: passwordField.text!)
+    @objc fileprivate func handleButtonPress(_ button: UIButton) {
+        if button == loginButton {
+            delegate?.loginView(self, didPressLoginButtonWithUserName: userNameField.text!,
+                                password: passwordField.text!)
+        } else {
+            delegate?.loginView(self, didPressRegisterButtonWithUserName: userNameField.text!,
+                                password: passwordField.text!)
+        }
     }
     
-    @objc private func handleRegisterPress() {
-        delegate?.loginView(self, didPressRegisterButtonWithUserName: userNameField.text!,
-                            password: passwordField.text!)
-    }
-    
-    @objc private func handleFieldsChange(_ field: UITextField) {
+    @objc fileprivate func handleFieldsChange() {
         if userNameField.text?.count ?? 0 < minUserNameLength ||
             passwordField.text?.count ?? 0 < minPasswordLength {
             loginButton.isEnabled = false
@@ -142,26 +137,38 @@ class LoginView: UIView, UITextFieldDelegate {
             registerButton.isEnabled = true
         }
     }
+    
+    @objc fileprivate func switchFieldFocus(_ field: UITextField) {
+        if field == userNameField {
+            passwordField.becomeFirstResponder()
+        } else {
+            userNameField.becomeFirstResponder()
+        }
+    }
 }
 
 // MARK: Private extensions
 
 private extension UITextField {
-    static func loginViewDefault() -> UITextField {
+    static func defaultField(forLoginView loginView: LoginView) -> UITextField {
         let field = UITextField()
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
+        field.textContentType = UITextContentType("")
+        field.addTarget(loginView, action: #selector(LoginView.handleFieldsChange), for: .editingChanged)
+        field.addTarget(loginView, action: #selector(LoginView.switchFieldFocus(_:)), for: .editingDidEndOnExit)
         return field
     }
 }
 
 private extension UIButton {
-    static func loginViewDefault() -> UIButton {
+    static func defaultButton(forLoginView loginView: LoginView) -> UIButton {
         let btn = UIButton(type: .system)
         btn.setTitleColor(.red, for: .normal)
         btn.setTitleColor(.gray, for: .disabled)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
         btn.isEnabled = false
+        btn.addTarget(loginView, action: #selector(LoginView.handleButtonPress(_:)), for: .touchUpInside)
         return btn
     }
 }
