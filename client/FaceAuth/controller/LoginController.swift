@@ -74,7 +74,9 @@ class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelega
             let credentials = credentialsBuilder.set(modelPath: modelPath).buildRegistrationCredentials() else {
                 return
         }
-        api.register(withCredentials: credentials)
+        api.register(withCredentials: credentials) { response in
+            print(response)
+        }
     }
     
     func faceController(_ faceController: FaceController, didCaptureFace faceImage: UIImage) {
@@ -82,6 +84,8 @@ class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelega
             let credentials = credentialsBuilder.set(image: faceImage).buildLoginCredentials() else {
                 return
         }
-        api.login(withCredentials: credentials)
+        api.login(withCredentials: credentials) { response in
+            print(response)
+        }
     }
 }

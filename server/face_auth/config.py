@@ -34,6 +34,21 @@ class API:
             MIME = 'application/x-yaml'
             FILE_NAME = 'model.yml'
 
+    class Response:
+        KEY_USER_NAME = 'user'
+        KEY_NAME = 'name'
+        KEY_DESCRIPTION = 'desc'
+        KEY_INFO = 'info'
+
+        VAL_SUCCESS = 'ok'
+        VAL_INVALID_REQUEST = 'invalid_request'
+
+        VAL_ALREADY_REGISTERED = 'already_registered'
+        VAL_COULD_NOT_ADD_USER = 'could_not_add_user'
+
+        VAL_INVALID_USER_PASS = 'invalid_user_pass'
+        VAL_UNRECOGNIZED_FACE = 'unrecognized_face'
+
 
 # Flask
 DEBUG = True

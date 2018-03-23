@@ -1,4 +1,4 @@
-from flask import request
+from flask import jsonify, request
 
 from . import factory
 from .authenticator import Authenticator
@@ -19,22 +19,22 @@ def register():
     reg_request = RegistrationRequest(request)
 
     if not reg_request.is_valid():
-        return 'Invalid request.\n', 400
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_REQUEST}), 400
 
     db = factory.database()
 
     if db.get_user(reg_request.email):
-        return 'User already registered.\n', 400
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_ALREADY_REGISTERED})
 
     pwd_hash = Authenticator.hash_password(reg_request.password)
     user = db.insert_user(reg_request.email, pwd_hash, reg_request.name, reg_request.description)
 
     if not user:
-        return 'Could not add user "{}".\n'.format(reg_request.email), 500
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_COULD_NOT_ADD_USER}), 500
 
     reg_request.save_file(user.face_model_path)
 
-    return 'Registered user "{}" with id: {}.\n'.format(user.name, user.uid)
+    return jsonify({API.Response.KEY_INFO: API.Response.VAL_SUCCESS})
 
 
 @app.route(API.Path.LOGIN, methods=['POST'])
@@ -42,16 +42,22 @@ def login():
     login_request = LoginRequest(request)
 
     if not login_request.is_valid():
-        return 'Invalid request.\n', 400
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_REQUEST}), 400
 
     auth: Authenticator = factory.authenticator(login_request.email)
 
     if not auth.verify_password(factory.database(), login_request.password):
-        return 'Invalid username/password combination.\n', 401
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_USER_PASS}), 401
 
-    login_request.save_file(auth.user.face_path)
+    user = auth.user
+    login_request.save_file(user.face_path)
 
     if not auth.verify_face():
-        return 'Unrecognized face.\n', 401
+        return jsonify({API.Response.KEY_INFO: API.Response.VAL_UNRECOGNIZED_FACE}), 401
 
-    return 'Welcome, {}.\n'.format(auth.user.name)
+    return jsonify({
+        API.Response.KEY_INFO: API.Response.VAL_SUCCESS,
+        API.Response.KEY_USER_NAME: user.email,
+        API.Response.KEY_NAME: user.name,
+        API.Response.KEY_DESCRIPTION: user.description
+    })

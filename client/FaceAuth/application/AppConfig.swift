@@ -41,5 +41,21 @@ struct Config {
                 static let fileName = "model.yml"
             }
         }
+        
+        struct Response {
+            static let keyUserName = Request.keyUserName
+            static let keyName = Request.keyName
+            static let keyDescription = Request.keyDescription
+            static let keyInfo = "info"
+            
+            static let valSuccess = "ok"
+            static let valInvalidRequest = "invalid_request"
+            
+            static let valAlreadyRegistered = "already_registered"
+            static let valCouldNotAddUser = "could_not_add_user"
+            
+            static let valInvalidUserPass = "invalid_user_pass"
+            static let valUnrecognizedFace = "unrecognized_face"
+        }
     }
 }

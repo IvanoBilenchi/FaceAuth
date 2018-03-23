@@ -29,7 +29,8 @@ class AuthServerAPI {
     
     // MARK: Public methods
     
-    func login(withCredentials credentials: LoginCredentials) {
+    func login(withCredentials credentials: LoginCredentials,
+               completionHandler: ((LoginResponse) -> Void)? = nil) {
         let request = URLRequest.multipart(
             url: URL(string: server + API.Path.login)!,
             parts: [
@@ -41,10 +42,22 @@ class AuthServerAPI {
                       fileName: API.Request.Face.fileName)
             ]
         )
-        URLSession.debug(request)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let loginResponse: LoginResponse
+            
+            if let response = response as? HTTPURLResponse, error == nil {
+                loginResponse = LoginResponse.from(response: response, data: data)
+            } else {
+                loginResponse = .error(message: error?.localizedDescription ?? "")
+            }
+            
+            completionHandler?(loginResponse)
+        }.resume()
     }
     
-    func register(withCredentials credentials: RegistrationCredentials) {
+    func register(withCredentials credentials: RegistrationCredentials,
+                  completionHandler: ((RegistrationResponse) -> Void)? = nil) {
         let request = URLRequest.multipart(
             url: URL(string: server + API.Path.registration)!,
             parts: [
@@ -58,7 +71,18 @@ class AuthServerAPI {
                       fileName: API.Request.Model.fileName)
             ]
         )
-        URLSession.debug(request)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let registrationResponse: RegistrationResponse
+            
+            if let response = response as? HTTPURLResponse, error == nil {
+                registrationResponse = RegistrationResponse.from(response: response, data: data)
+            } else {
+                registrationResponse = .error(message: error?.localizedDescription ?? "")
+            }
+            
+            completionHandler?(registrationResponse)
+        }.resume()
     }
 }
 
@@ -69,12 +93,12 @@ private extension URLSession {
     static func debug(_ request: URLRequest) {
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
-                print("error=\(error!)")
+                print("error = \(error!)")
                 return
             }
             
-            if let httpStatus = response as? HTTPURLResponse, httpStatus.statusCode != 200 {
-                print("statusCode should be 200, but is \(httpStatus.statusCode)")
+            if let response = response as? HTTPURLResponse {
+                print("statusCode = \(response.statusCode)")
                 print("response = \(String(describing: response))")
             }
             
