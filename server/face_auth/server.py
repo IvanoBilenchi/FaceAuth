@@ -2,6 +2,7 @@ from flask import request
 
 from . import factory
 from .authenticator import Authenticator
+from .config import API
 from .request import LoginRequest, RegistrationRequest
 
 # App instance
@@ -13,7 +14,7 @@ def hello():
     return 'Hello, world!\n'
 
 
-@app.route('/register', methods=['POST'])
+@app.route(API.Path.REGISTRATION, methods=['POST'])
 def register():
     reg_request = RegistrationRequest(request)
 
@@ -36,7 +37,7 @@ def register():
     return 'Registered user "{}" with id: {}.\n'.format(user.name, user.uid)
 
 
-@app.route('/login', methods=['POST'])
+@app.route(API.Path.LOGIN, methods=['POST'])
 def login():
     login_request = LoginRequest(request)
 

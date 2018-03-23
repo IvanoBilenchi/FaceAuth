@@ -9,6 +9,7 @@ from .decorators import memoized
 
 @memoized
 def shared_app() -> Flask:
+
     flask_app = Flask('face_auth')
     flask_app.config.from_object('face_auth.config')
     Session(flask_app)
@@ -26,7 +27,7 @@ def shared_app() -> Flask:
 def database() -> Database:
     db: Database = getattr(g, '_database', None)
     if not db:
-        db = g._database = Database(config.DB_FILE_PATH, config.DB_SCHEMA_PATH)
+        db = g._database = Database(config.Path.DB_FILE, config.Path.DB_SCHEMA_FILE)
         db.connect()
     return db
 

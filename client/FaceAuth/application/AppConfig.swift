@@ -11,9 +11,35 @@ struct Config {
         static let minPasswordLength: UInt = 8
     }
     
-    struct Server {
-        static let name = "MacBook-Pro-di-Ivano.local"
-        static let port: UInt = 5000
-        static let useHTTPS = false
+    struct API {
+        struct Server {
+            static let name = "MacBook-Pro-di-Ivano.local"
+            static let port: UInt = 5000
+            static let useHTTPS = false
+        }
+        
+        struct Path {
+            static let login = "/login"
+            static let registration = "/register"
+        }
+        
+        struct Request {
+            static let keyUserName = "user"
+            static let keyPassword = "pass"
+            static let keyName = "name"
+            static let keyDescription = "desc"
+            
+            struct Face {
+                static let key = "face"
+                static let mime = "image/png"
+                static let fileName = "face.png"
+            }
+            
+            struct Model {
+                static let key = "model"
+                static let mime = "application/x-yaml"
+                static let fileName = "model.yml"
+            }
+        }
     }
 }

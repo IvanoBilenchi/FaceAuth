@@ -7,6 +7,8 @@ import Foundation
 
 class AuthServerAPI {
     
+    private typealias API = Config.API
+    
     // MARK: Public properties
     
     let serverName: String
@@ -28,12 +30,15 @@ class AuthServerAPI {
     // MARK: Public methods
     
     func login(withCredentials credentials: LoginCredentials) {
-
         let request = URLRequest.multipart(
-            url: URL(string: server + "/login")!,
+            url: URL(string: server + API.Path.login)!,
             parts: [
-                .parameter(key: "user", value: credentials.userName),
-                .parameter(key: "pass", value: credentials.password)
+                .parameter(key: API.Request.keyUserName, value: credentials.userName),
+                .parameter(key: API.Request.keyPassword, value: credentials.password),
+                .file(key: API.Request.Face.key,
+                      data: UIImagePNGRepresentation(credentials.image)!,
+                      mime: API.Request.Face.mime,
+                      fileName: API.Request.Face.fileName)
             ]
         )
         URLSession.debug(request)
@@ -41,10 +46,16 @@ class AuthServerAPI {
     
     func register(withCredentials credentials: RegistrationCredentials) {
         let request = URLRequest.multipart(
-            url: URL(string: server + "/register")!,
+            url: URL(string: server + API.Path.registration)!,
             parts: [
-                .parameter(key: "user", value: credentials.userName),
-                .parameter(key: "pass", value: credentials.password)
+                .parameter(key: API.Request.keyUserName, value: credentials.userName),
+                .parameter(key: API.Request.keyPassword, value: credentials.password),
+                .parameter(key: API.Request.keyName, value: credentials.name),
+                .parameter(key: API.Request.keyDescription, value: credentials.description ?? ""),
+                .file(key: API.Request.Model.key,
+                      data: (try? Data(contentsOf: URL(fileURLWithPath: credentials.modelPath))) ?? Data(),
+                      mime: API.Request.Model.mime,
+                      fileName: API.Request.Model.fileName)
             ]
         )
         URLSession.debug(request)

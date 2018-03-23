@@ -8,17 +8,12 @@ from .user import User
 class Database:
     """Models a database session."""
 
-    # Private fields
-
-    __db_path: str
-    __schema_path: str
-    __connection: sql.Connection = None
-
     # Lifecycle
 
     def __init__(self, db_path: str, schema_path: str) -> None:
-        self.__db_path = db_path
-        self.__schema_path = schema_path
+        self.__db_path: str = db_path
+        self.__schema_path: str = schema_path
+        self.__connection: sql.Connection = None
 
     # Public methods
 

@@ -4,20 +4,16 @@ from flask import Request as FlaskRequest
 from typing import Optional
 from werkzeug.datastructures import FileStorage
 
+from .config import API
+
 
 class Request:
     """Base request class."""
 
-    # Public fields
-
-    email: Optional[str] = None
-    password: Optional[str] = None
-
-    # Private fields
-
-    _file: Optional[FileStorage] = None
-
-    # Public methods
+    def __init__(self, request: FlaskRequest) -> None:
+        self.email: Optional[str] = request.form.get(API.Request.KEY_USER_NAME)
+        self.password: Optional[str] = request.form.get(API.Request.KEY_PASSWORD)
+        self._file: Optional[FileStorage] = None
 
     def is_valid(self) -> bool:
         return True if self.email and self.password and self._file else False
@@ -32,35 +28,27 @@ class Request:
 class LoginRequest(Request):
     """Login request."""
 
-    # Lifecycle
-
     def __init__(self, request: FlaskRequest) -> None:
-        self.email = request.form.get('user')
-        self.password = request.form.get('pass')
+        super(LoginRequest, self).__init__(request)
 
-        face_file = request.files.get('face')
-
-        if face_file and face_file.filename.endswith('.png'):
+        face_config = API.Request.Face
+        face_file = request.files.get(face_config.KEY)
+        if face_file and face_file.filename == face_config.FILE_NAME and face_file.mimetype == face_config.MIME:
             self._file = face_file
 
 
 class RegistrationRequest(Request):
     """Registration request."""
 
-    # Public fields
-
-    name: Optional[str] = None
-    description: Optional[str] = None
-
     def __init__(self, request: FlaskRequest) -> None:
-        self.email = request.form.get('user')
-        self.password = request.form.get('pass')
-        self.name = request.form.get('name')
-        self.description = request.form.get('desc')
+        super(RegistrationRequest, self).__init__(request)
+        self.name: Optional[str] = request.form.get(API.Request.KEY_NAME)
+        self.description: Optional[str] = request.form.get(API.Request.KEY_DESCRIPTION)
 
-        model_file = request.files.get('model')
+        model_config = API.Request.Model
+        model_file = request.files.get(model_config.KEY)
 
-        if model_file and model_file.filename.endswith('.yml'):
+        if model_file and model_file.filename == model_config.FILE_NAME and model_file.mimetype == model_config.MIME:
             self._file = model_file
 
     def is_valid(self) -> bool:

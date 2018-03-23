@@ -10,9 +10,9 @@ class AppFactory {
     
     // MARK: Model
     
-    lazy var authServerAPI: AuthServerAPI = AuthServerAPI(serverName: Config.Server.name,
-                                                          port: Config.Server.port,
-                                                          useHTTPS: Config.Server.useHTTPS)
+    lazy var authServerAPI: AuthServerAPI = AuthServerAPI(serverName: Config.API.Server.name,
+                                                          port: Config.API.Server.port,
+                                                          useHTTPS: Config.API.Server.useHTTPS)
     
     lazy var faceDetector: FaceDetector = FaceDetector(session: cameraSession)
     

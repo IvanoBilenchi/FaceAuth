@@ -1,5 +1,6 @@
 from enum import Enum, auto
 from passlib.hash import bcrypt_sha256
+from typing import Optional
 
 from . import config
 from .database import Database
@@ -28,17 +29,13 @@ class Authenticator:
         """The user this authenticator refers to."""
         return self.__user
 
-    # Private fields
-
-    __state = State.NOT_AUTHENTICATED
-    __email: str
-    __user: User = None
-
     # Lifecycle
 
     def __init__(self, email: str) -> None:
         """Initializes a new authenticator."""
-        self.__email = email
+        self.__email: str = email
+        self.__state = Authenticator.State.NOT_AUTHENTICATED
+        self.__user: Optional[User] = None
 
     # Public methods
 

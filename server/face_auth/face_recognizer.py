@@ -4,18 +4,13 @@ import cv2
 class FaceRecognizer:
     """Face recognizer."""
 
-    # Private fields
-
-    __face_classifier: cv2.face_LBPHFaceRecognizer
-    __recognition_threshold: float
-
     # Public methods
 
     def __init__(self, model_path: str, threshold: float = 15.0) -> None:
         """Initializes a new face recognizer."""
-        self.__face_classifier = cv2.face.LBPHFaceRecognizer_create()
+        self.__face_classifier: cv2.face_LBPHFaceRecognizer = cv2.face.LBPHFaceRecognizer_create()
         self.__face_classifier.read(model_path)
-        self.__recognition_threshold = threshold
+        self.__recognition_threshold: float = threshold
 
     def confidence_of_prediction(self, face_path: str) -> float:
         """Returns the confidence that a face image matches that of the person the model was trained on."""
