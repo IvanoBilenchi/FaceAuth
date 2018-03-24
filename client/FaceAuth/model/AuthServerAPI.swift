@@ -40,17 +40,9 @@ class AuthServerAPI {
     
     func login(withCredentials credentials: LoginCredentials,
                completionHandler: ((LoginResponse) -> Void)? = nil) {
-        let request = URLRequest.multipart(
-            url: URL(string: server + API.Path.login)!,
-            parts: [
-                .parameter(key: API.Request.keyUserName, value: credentials.userName),
-                .parameter(key: API.Request.keyPassword, value: credentials.password),
-                .file(key: API.Request.Face.key,
-                      data: UIImagePNGRepresentation(credentials.image)!,
-                      mime: API.Request.Face.mime,
-                      fileName: API.Request.Face.fileName)
-            ]
-        )
+        
+        let request = loginRequest(withUrl: URL(string: server + API.Path.login)!,
+                                   credentials: credentials)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             let loginResponse: LoginResponse
@@ -70,6 +62,7 @@ class AuthServerAPI {
     
     func register(withCredentials credentials: RegistrationCredentials,
                   completionHandler: ((RegistrationResponse) -> Void)? = nil) {
+        
         let request = URLRequest.multipart(
             url: URL(string: server + API.Path.registration)!,
             parts: [
@@ -102,19 +95,13 @@ class AuthServerAPI {
                        name: String,
                        description: String,
                        completionHandler: ((GenericResponse) -> Void)? = nil) {
-        let request = URLRequest.multipart(
-            url: URL(string: server + API.Path.update)!,
-            parts: [
-                .parameter(key: API.Request.keyUserName, value: credentials.userName),
-                .parameter(key: API.Request.keyPassword, value: credentials.password),
-                .parameter(key: API.Request.keyName, value: name),
-                .parameter(key: API.Request.keyDescription, value: description),
-                .file(key: API.Request.Face.key,
-                      data: UIImagePNGRepresentation(credentials.image)!,
-                      mime: API.Request.Face.mime,
-                      fileName: API.Request.Face.fileName)
-            ]
-        )
+        
+        let request = loginRequest(withUrl: URL(string: server + API.Path.update)!,
+                                   credentials: credentials,
+                                   additionalParameters: [
+                                    .parameter(key: API.Request.keyName, value: name),
+                                    .parameter(key: API.Request.keyDescription, value: description)
+            ])
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             let updateResponse: GenericResponse
@@ -134,17 +121,9 @@ class AuthServerAPI {
     
     func delete(withCredentials credentials: LoginCredentials,
                 completionHandler: ((GenericResponse) -> Void)? = nil) {
-        let request = URLRequest.multipart(
-            url: URL(string: server + API.Path.delete)!,
-            parts: [
-                .parameter(key: API.Request.keyUserName, value: credentials.userName),
-                .parameter(key: API.Request.keyPassword, value: credentials.password),
-                .file(key: API.Request.Face.key,
-                      data: UIImagePNGRepresentation(credentials.image)!,
-                      mime: API.Request.Face.mime,
-                      fileName: API.Request.Face.fileName)
-            ]
-        )
+        
+        let request = loginRequest(withUrl: URL(string: server + API.Path.delete)!,
+                                   credentials: credentials)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             let deleteResponse: GenericResponse
@@ -160,6 +139,28 @@ class AuthServerAPI {
                 self.delegate?.api(self, didReceiveDeleteResponse: deleteResponse)
             }
         }.resume()
+    }
+    
+    // MARK: Private methods
+    
+    private func loginRequest(withUrl url: URL,
+                              credentials: LoginCredentials,
+                              additionalParameters: [URLRequest.MultipartContent]? = nil) -> URLRequest {
+        var parts: [URLRequest.MultipartContent] = [
+            .parameter(key: API.Request.keyUserName, value: credentials.userName),
+            .parameter(key: API.Request.keyPassword, value: credentials.password)
+        ]
+        
+        if let additionalParameters = additionalParameters {
+            parts.append(contentsOf: additionalParameters)
+        }
+        
+        parts.append(.file(key: API.Request.Face.key,
+                           data: UIImagePNGRepresentation(credentials.image)!,
+                           mime: API.Request.Face.mime,
+                           fileName: API.Request.Face.fileName))
+        
+        return URLRequest.multipart(url: url, parts: parts)
     }
 }
 
