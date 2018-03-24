@@ -9,11 +9,6 @@ from .request import LoginRequest, RegistrationRequest
 app = factory.shared_app()
 
 
-@app.route('/')
-def hello():
-    return 'Hello, world!\n'
-
-
 @app.route(API.Path.REGISTRATION, methods=['POST'])
 def register():
     reg_request = RegistrationRequest(request)
