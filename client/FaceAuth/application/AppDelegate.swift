@@ -18,12 +18,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
         return true
     }
-    
-    func applicationWillResignActive(_ application: UIApplication) {
-        factory.faceDetector.stopDetecting()
-    }
-    
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        factory.faceDetector.startDetecting()
-    }
 }

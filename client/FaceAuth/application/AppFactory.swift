@@ -63,6 +63,13 @@ class AppFactory {
     lazy var loginController: LoginController = {
         let controller = LoginController(api: authServerAPI, loginView: loginView, wireframe: wireframe)
         loginView.delegate = controller
+        alertController.rootViewController = controller
+        return controller
+    }()
+    
+    lazy var alertController: AlertController = {
+        let controller = AlertController()
+        authServerAPI.delegate = controller
         return controller
     }()
     

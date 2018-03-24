@@ -5,6 +5,11 @@
 
 import Foundation
 
+protocol AuthServerAPIDelegate: class {
+    func api(_ api: AuthServerAPI, didReceiveLoginResponse response: LoginResponse)
+    func api(_ api: AuthServerAPI, didReceiveRegistrationResponse response: RegistrationResponse)
+}
+
 class AuthServerAPI {
     
     private typealias API = Config.API
@@ -14,6 +19,8 @@ class AuthServerAPI {
     let serverName: String
     let port: UInt
     let useHTTPS: Bool
+    
+    weak var delegate: AuthServerAPIDelegate?
     
     var server: String {
         return "\(useHTTPS ? "https" : "http")://\(serverName):\(port)"
@@ -52,7 +59,10 @@ class AuthServerAPI {
                 loginResponse = .error(message: error?.localizedDescription ?? "")
             }
             
-            completionHandler?(loginResponse)
+            DispatchQueue.main.async {
+                completionHandler?(loginResponse)
+                self.delegate?.api(self, didReceiveLoginResponse: loginResponse)
+            }
         }.resume()
     }
     
@@ -81,7 +91,10 @@ class AuthServerAPI {
                 registrationResponse = .error(message: error?.localizedDescription ?? "")
             }
             
-            completionHandler?(registrationResponse)
+            DispatchQueue.main.async {
+                completionHandler?(registrationResponse)
+                self.delegate?.api(self, didReceiveRegistrationResponse: registrationResponse)
+            }
         }.resume()
     }
 }

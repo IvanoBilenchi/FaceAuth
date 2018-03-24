@@ -16,6 +16,16 @@ class LoginView: UIView, UITextFieldDelegate {
     
     weak var delegate: LoginViewDelegate?
     
+    var isEnabled: Bool {
+        get { return loginButton.isEnabled }
+        set {
+            loginButton.isEnabled = newValue
+            registerButton.isEnabled = newValue
+            userNameField.isEnabled = newValue
+            passwordField.isEnabled = newValue
+        }
+    }
+    
     // MARK: Private properties
     
     private lazy var form: UIView = {
@@ -154,6 +164,7 @@ private extension UITextField {
         let field = UITextField()
         field.autocorrectionType = .no
         field.autocapitalizationType = .none
+        field.clearButtonMode = .always
         field.textContentType = UITextContentType("")
         field.addTarget(loginView, action: #selector(LoginView.handleFieldsChange), for: .editingChanged)
         field.addTarget(loginView, action: #selector(LoginView.switchFieldFocus(_:)), for: .editingDidEndOnExit)

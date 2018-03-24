@@ -12,7 +12,7 @@ protocol FaceControllerDelegate: class {
 }
 
 protocol FaceWireframe: class {
-    func showLoginController()
+    func showLoginUI()
 }
 
 class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
@@ -92,9 +92,14 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         view = CameraView(session: detector.session)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         detector.startDetecting()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        detector.stopDetecting()
     }
     
     // MARK: FaceDetectorDelegate
@@ -120,7 +125,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
             photoView.image = recognizer.lastTrainingImage()
         } else {
             delegate?.faceController(self, didCaptureFace: FaceRecognizer.processedImage(from: observation))
-            wireframe?.showLoginController()
+            wireframe?.showLoginUI()
         }
     }
     
@@ -131,6 +136,6 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
         recognizer.serializeModelToFile(atPath: modelPath)
         delegate?.faceController(self, didTrainModel: modelPath)
-        wireframe?.showLoginController()
+        wireframe?.showLoginUI()
     }
 }

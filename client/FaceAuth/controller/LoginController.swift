@@ -6,7 +6,8 @@
 import UIKit
 
 protocol LoginWireframe: class {
-    func showFaceController(withMode mode: FaceController.Mode)
+    func showFaceLoginUI()
+    func showFaceEnrollmentUI()
 }
 
 class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelegate {
@@ -57,14 +58,14 @@ class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelega
     
     func loginView(_ view: LoginView, didPressLoginButtonWithUserName userName: String, password: String) {
         credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
-        wireframe?.showFaceController(withMode: .recognize)
+        wireframe?.showFaceLoginUI()
     }
     
     func loginView(_ view: LoginView, didPressRegisterButtonWithUserName userName: String, password: String) {
         credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
             .set(name: "Ivano Bilenchi") // TODO: remove
             .set(description: "Software engineer") // TODO: remove
-        wireframe?.showFaceController(withMode: .enroll)
+        wireframe?.showFaceEnrollmentUI()
     }
     
     // MARK: FaceControllerDelegate
@@ -74,7 +75,11 @@ class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelega
             let credentials = credentialsBuilder.set(modelPath: modelPath).buildRegistrationCredentials() else {
                 return
         }
+        
+        setWaitingForResponse(true)
+        
         api.register(withCredentials: credentials) { response in
+            self.setWaitingForResponse(false)
             print(response)
         }
     }
@@ -84,8 +89,19 @@ class LoginController: UIViewController, LoginViewDelegate, FaceControllerDelega
             let credentials = credentialsBuilder.set(image: faceImage).buildLoginCredentials() else {
                 return
         }
+        
+        setWaitingForResponse(true)
+        
         api.login(withCredentials: credentials) { response in
+            self.setWaitingForResponse(false)
             print(response)
         }
+    }
+    
+    // MARK: Private func
+    
+    func setWaitingForResponse(_ waiting: Bool) {
+        loginView.isEnabled = !waiting
+        UIApplication.shared.isNetworkActivityIndicatorVisible = waiting
     }
 }

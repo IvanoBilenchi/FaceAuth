@@ -12,6 +12,7 @@
 		CC214F722063FC130034C722 /* AuthServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F712063FC130034C722 /* AuthServerAPI.swift */; };
 		CC214F742063FC790034C722 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F732063FC790034C722 /* Credentials.swift */; };
 		CC2C0D36206520C000A8B32C /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0D35206520C000A8B32C /* Response.swift */; };
+		CC2C0D3C206571F200A8B32C /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0D3B206571F200A8B32C /* AlertController.swift */; };
 		CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */; };
 		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
 		CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */; };
@@ -37,6 +38,7 @@
 		CC214F712063FC130034C722 /* AuthServerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServerAPI.swift; sourceTree = "<group>"; };
 		CC214F732063FC790034C722 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		CC2C0D35206520C000A8B32C /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
+		CC2C0D3B206571F200A8B32C /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceObservation.swift; sourceTree = "<group>"; };
 		CC5CAF1F2056E2610096D17B /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CC6DEC3D20593B8300624FC1 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = External/opencv2.framework; sourceTree = "<group>"; };
@@ -149,6 +151,7 @@
 		CCA1B38420519AA600DB8A7F /* controller */ = {
 			isa = PBXGroup;
 			children = (
+				CC2C0D3B206571F200A8B32C /* AlertController.swift */,
 				CCA1B38520519AA600DB8A7F /* FaceController.swift */,
 				CCB6771B2062CEEE00021868 /* LoginController.swift */,
 			);
@@ -267,6 +270,7 @@
 				CCB6771E2062CFB600021868 /* LoginView.swift in Sources */,
 				CCA1B38A20519AA600DB8A7F /* FaceController.swift in Sources */,
 				CCA1B38920519AA600DB8A7F /* AppDelegate.swift in Sources */,
+				CC2C0D3C206571F200A8B32C /* AlertController.swift in Sources */,
 				CCB90AFF2055412300EF8698 /* FaceView.swift in Sources */,
 				CC6DEC4E20593C5700624FC1 /* UIImage+OpenCV.mm in Sources */,
 				CC7EA6ED20598EB20091F580 /* FaceRecognizer.swift in Sources */,

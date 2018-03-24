@@ -19,14 +19,17 @@ class AppWireframe: LoginWireframe, FaceWireframe {
     
     // MARK: LoginWireframe
     
-    func showFaceController(withMode mode: FaceController.Mode) {
+    func showFaceEnrollmentUI() { showFaceController(withMode: .enroll) }
+    func showFaceLoginUI() { showFaceController(withMode: .recognize) }
+    
+    private func showFaceController(withMode mode: FaceController.Mode) {
         f.faceController.mode = mode
         f.navigationController.pushViewController(f.faceController, animated: true)
     }
     
     // MARK: FaceWireframe
     
-    func showLoginController() {
+    func showLoginUI() {
         f.navigationController.popViewController(animated: true)
     }
 }
