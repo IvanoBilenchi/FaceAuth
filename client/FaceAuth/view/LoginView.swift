@@ -34,7 +34,9 @@ class LoginView: UIView, UITextFieldDelegate {
         form.layer.cornerRadius = 10.0
         
         form.addSubview(userNameField)
+        form.addSubview(userNameLogo)
         form.addSubview(passwordField)
+        form.addSubview(passwordLogo)
         form.addSubview(loginButton)
         form.addSubview(registerButton)
         
@@ -49,11 +51,23 @@ class LoginView: UIView, UITextFieldDelegate {
         return field
     }()
     
+    private lazy var userNameLogo: UILabel = {
+        let label = UILabel()
+        label.text = "👤"
+        return label
+    }()
+    
     private lazy var passwordField: UITextField = {
         let field = UITextField.defaultField(forLoginView: self)
         field.isSecureTextEntry = true
         field.placeholder = "Password"
         return field
+    }()
+    
+    private lazy var passwordLogo: UILabel = {
+        let label = UILabel()
+        label.text = "🔑"
+        return label
     }()
     
     private lazy var loginButton: UIButton = {
@@ -92,31 +106,46 @@ class LoginView: UIView, UITextFieldDelegate {
     
     private func setupConstraints() {
         
+        let logoSize: CGFloat = 30.0
+        let margin: CGFloat = 20.0
+        let sMargin: CGFloat = margin / 2.0
+        let xsMargin: CGFloat = sMargin / 2.0
+        
         form.translatesAutoresizingMaskIntoConstraints = false
         form.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        form.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -20.0).isActive = true
+        form.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -margin).isActive = true
         form.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.8).isActive = true
         
+        userNameLogo.translatesAutoresizingMaskIntoConstraints = false
+        userNameLogo.widthAnchor.constraint(equalToConstant: logoSize).isActive = true
+        userNameLogo.heightAnchor.constraint(equalToConstant: logoSize).isActive = true
+        userNameLogo.leftAnchor.constraint(equalTo: form.leftAnchor, constant: margin).isActive = true
+        userNameLogo.rightAnchor.constraint(equalTo: userNameField.leftAnchor, constant: -sMargin).isActive = true
+        userNameLogo.centerYAnchor.constraint(equalTo: userNameField.centerYAnchor).isActive = true
+        
         userNameField.translatesAutoresizingMaskIntoConstraints = false
-        userNameField.topAnchor.constraint(equalTo: form.topAnchor, constant: 20.0).isActive = true
-        userNameField.widthAnchor.constraint(equalTo: form.widthAnchor, constant: -40.0).isActive = true
-        userNameField.centerXAnchor.constraint(equalTo: form.centerXAnchor).isActive = true
+        userNameField.topAnchor.constraint(equalTo: form.topAnchor, constant: margin).isActive = true
+        userNameField.rightAnchor.constraint(equalTo: form.rightAnchor, constant: -margin).isActive = true
+        
+        passwordLogo.translatesAutoresizingMaskIntoConstraints = false
+        passwordLogo.widthAnchor.constraint(equalToConstant: logoSize).isActive = true
+        passwordLogo.heightAnchor.constraint(equalToConstant: logoSize).isActive = true
+        passwordLogo.leftAnchor.constraint(equalTo: form.leftAnchor, constant: margin).isActive = true
+        passwordLogo.rightAnchor.constraint(equalTo: passwordField.leftAnchor, constant: -sMargin).isActive = true
+        passwordLogo.centerYAnchor.constraint(equalTo: passwordField.centerYAnchor).isActive = true
         
         passwordField.translatesAutoresizingMaskIntoConstraints = false
-        passwordField.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: 20.0).isActive = true
-        passwordField.widthAnchor.constraint(equalTo: userNameField.widthAnchor).isActive = true
-        passwordField.centerXAnchor.constraint(equalTo: userNameField.centerXAnchor).isActive = true
+        passwordField.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: margin).isActive = true
+        passwordField.rightAnchor.constraint(equalTo: form.rightAnchor, constant: -margin).isActive = true
         
         loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: 20.0).isActive = true
-        loginButton.widthAnchor.constraint(equalTo: userNameField.widthAnchor).isActive = true
-        loginButton.centerXAnchor.constraint(equalTo: userNameField.centerXAnchor).isActive = true
+        loginButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: margin).isActive = true
+        loginButton.centerXAnchor.constraint(equalTo: form.centerXAnchor).isActive = true
         
         registerButton.translatesAutoresizingMaskIntoConstraints = false
-        registerButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: 5.0).isActive = true
-        registerButton.widthAnchor.constraint(equalTo: userNameField.widthAnchor).isActive = true
-        registerButton.centerXAnchor.constraint(equalTo: userNameField.centerXAnchor).isActive = true
-        registerButton.bottomAnchor.constraint(equalTo: form.bottomAnchor, constant: -15.0).isActive = true
+        registerButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: xsMargin).isActive = true
+        registerButton.centerXAnchor.constraint(equalTo: form.centerXAnchor).isActive = true
+        registerButton.bottomAnchor.constraint(equalTo: form.bottomAnchor, constant: -(sMargin + xsMargin)).isActive = true
     }
     
     // MARK: UIView

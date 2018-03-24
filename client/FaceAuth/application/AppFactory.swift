@@ -57,6 +57,8 @@ class AppFactory {
         faceController.delegate = loginCoordinator
         alertController.rootViewController = loginController
         
+        UIBarButtonItem.appearance().tintColor = .red
+        
         return controller
     }()
     
