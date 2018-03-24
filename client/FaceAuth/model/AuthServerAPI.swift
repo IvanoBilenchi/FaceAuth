@@ -8,6 +8,8 @@ import Foundation
 protocol AuthServerAPIDelegate: class {
     func api(_ api: AuthServerAPI, didReceiveLoginResponse response: LoginResponse)
     func api(_ api: AuthServerAPI, didReceiveRegistrationResponse response: RegistrationResponse)
+    func api(_ api: AuthServerAPI, didReceiveUpdateResponse response: GenericResponse)
+    func api(_ api: AuthServerAPI, didReceiveDeleteResponse response: GenericResponse)
 }
 
 class AuthServerAPI {
@@ -73,8 +75,6 @@ class AuthServerAPI {
             parts: [
                 .parameter(key: API.Request.keyUserName, value: credentials.userName),
                 .parameter(key: API.Request.keyPassword, value: credentials.password),
-                .parameter(key: API.Request.keyName, value: credentials.name),
-                .parameter(key: API.Request.keyDescription, value: credentials.description ?? ""),
                 .file(key: API.Request.Model.key,
                       data: (try? Data(contentsOf: URL(fileURLWithPath: credentials.modelPath))) ?? Data(),
                       mime: API.Request.Model.mime,
@@ -97,6 +97,70 @@ class AuthServerAPI {
             }
         }.resume()
     }
+    
+    func updateDetails(withCredentials credentials: LoginCredentials,
+                       name: String,
+                       description: String,
+                       completionHandler: ((GenericResponse) -> Void)? = nil) {
+        let request = URLRequest.multipart(
+            url: URL(string: server + API.Path.update)!,
+            parts: [
+                .parameter(key: API.Request.keyUserName, value: credentials.userName),
+                .parameter(key: API.Request.keyPassword, value: credentials.password),
+                .parameter(key: API.Request.keyName, value: name),
+                .parameter(key: API.Request.keyDescription, value: description),
+                .file(key: API.Request.Face.key,
+                      data: UIImagePNGRepresentation(credentials.image)!,
+                      mime: API.Request.Face.mime,
+                      fileName: API.Request.Face.fileName)
+            ]
+        )
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let updateResponse: GenericResponse
+            
+            if let response = response as? HTTPURLResponse, error == nil {
+                updateResponse = GenericResponse.from(response: response, data: data)
+            } else {
+                updateResponse = .error(message: error?.localizedDescription ?? "")
+            }
+            
+            DispatchQueue.main.async {
+                completionHandler?(updateResponse)
+                self.delegate?.api(self, didReceiveUpdateResponse: updateResponse)
+            }
+        }.resume()
+    }
+    
+    func delete(withCredentials credentials: LoginCredentials,
+                completionHandler: ((GenericResponse) -> Void)? = nil) {
+        let request = URLRequest.multipart(
+            url: URL(string: server + API.Path.delete)!,
+            parts: [
+                .parameter(key: API.Request.keyUserName, value: credentials.userName),
+                .parameter(key: API.Request.keyPassword, value: credentials.password),
+                .file(key: API.Request.Face.key,
+                      data: UIImagePNGRepresentation(credentials.image)!,
+                      mime: API.Request.Face.mime,
+                      fileName: API.Request.Face.fileName)
+            ]
+        )
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            let deleteResponse: GenericResponse
+            
+            if let response = response as? HTTPURLResponse, error == nil {
+                deleteResponse = GenericResponse.from(response: response, data: data)
+            } else {
+                deleteResponse = .error(message: error?.localizedDescription ?? "")
+            }
+            
+            DispatchQueue.main.async {
+                completionHandler?(deleteResponse)
+                self.delegate?.api(self, didReceiveDeleteResponse: deleteResponse)
+            }
+        }.resume()
+    }
 }
 
 // MARK: Private
@@ -104,7 +168,7 @@ class AuthServerAPI {
 private extension URLSession {
     
     static func debug(_ request: URLRequest) {
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        URLSession.shared.dataTask(with: request) { data, response, error in
             guard let data = data, error == nil else {
                 print("error = \(error!)")
                 return
@@ -117,8 +181,7 @@ private extension URLSession {
             
             let responseString = String(data: data, encoding: .utf8)
             print("responseString = \(String(describing: responseString))")
-        }
-        task.resume()
+        }.resume()
     }
 }
 

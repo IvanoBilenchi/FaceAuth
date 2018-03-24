@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		CC214F6E2063B7AB0034C722 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6D2063B7AB0034C722 /* AppConfig.swift */; };
-		CC214F702063BE9D0034C722 /* AppWireframe.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F6F2063BE9D0034C722 /* AppWireframe.swift */; };
 		CC214F722063FC130034C722 /* AuthServerAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F712063FC130034C722 /* AuthServerAPI.swift */; };
 		CC214F742063FC790034C722 /* Credentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC214F732063FC790034C722 /* Credentials.swift */; };
 		CC2C0D36206520C000A8B32C /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0D35206520C000A8B32C /* Response.swift */; };
@@ -30,11 +29,11 @@
 		CCB6771E2062CFB600021868 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB6771D2062CFB600021868 /* LoginView.swift */; };
 		CCB90AFF2055412300EF8698 /* FaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB90AFE2055412300EF8698 /* FaceView.swift */; };
 		CCB9D2982059945D00A46F32 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC6DEC3D20593B8300624FC1 /* opencv2.framework */; };
+		CCF710442066C01C000F18BD /* LoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCF710432066C01C000F18BD /* LoginCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		CC214F6D2063B7AB0034C722 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
-		CC214F6F2063BE9D0034C722 /* AppWireframe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppWireframe.swift; sourceTree = "<group>"; };
 		CC214F712063FC130034C722 /* AuthServerAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthServerAPI.swift; sourceTree = "<group>"; };
 		CC214F732063FC790034C722 /* Credentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Credentials.swift; sourceTree = "<group>"; };
 		CC2C0D35206520C000A8B32C /* Response.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Response.swift; sourceTree = "<group>"; };
@@ -62,6 +61,7 @@
 		CCB6771B2062CEEE00021868 /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		CCB6771D2062CFB600021868 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		CCB90AFE2055412300EF8698 /* FaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceView.swift; sourceTree = "<group>"; };
+		CCF710432066C01C000F18BD /* LoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +122,7 @@
 				CCA1B38C20519C6600DB8A7F /* model */,
 				CCA1B38B20519C6600DB8A7F /* view */,
 				CCA1B38420519AA600DB8A7F /* controller */,
+				CCF710422066BFF9000F18BD /* coordinator */,
 				CCA1B37D20519AA600DB8A7F /* res */,
 			);
 			path = FaceAuth;
@@ -143,7 +144,6 @@
 				CC214F6D2063B7AB0034C722 /* AppConfig.swift */,
 				CCA1B38320519AA600DB8A7F /* AppDelegate.swift */,
 				CCA1B38F2051A24400DB8A7F /* AppFactory.swift */,
-				CC214F6F2063BE9D0034C722 /* AppWireframe.swift */,
 			);
 			path = application;
 			sourceTree = "<group>";
@@ -181,6 +181,14 @@
 				CC2C0D35206520C000A8B32C /* Response.swift */,
 			);
 			path = model;
+			sourceTree = "<group>";
+		};
+		CCF710422066BFF9000F18BD /* coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				CCF710432066C01C000F18BD /* LoginCoordinator.swift */,
+			);
+			path = coordinator;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -254,10 +262,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC214F702063BE9D0034C722 /* AppWireframe.swift in Sources */,
 				CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */,
 				CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */,
 				CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */,
+				CCF710442066C01C000F18BD /* LoginCoordinator.swift in Sources */,
 				CCB6771C2062CEEE00021868 /* LoginController.swift in Sources */,
 				CC2C0D36206520C000A8B32C /* Response.swift in Sources */,
 				CC214F742063FC790034C722 /* Credentials.swift in Sources */,

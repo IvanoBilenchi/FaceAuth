@@ -16,8 +16,6 @@ class AppFactory {
     
     lazy var faceDetector: FaceDetector = FaceDetector(session: cameraSession)
     
-    lazy var faceRecognizer: FaceRecognizer = FaceRecognizer()
-    
     lazy var cameraSession: AVCaptureSession = {
         let session = AVCaptureSession()
         session.sessionPreset = .high
@@ -50,30 +48,27 @@ class AppFactory {
     
     // MARK: Controller
     
-    lazy var rootViewController: UIViewController = navigationController
+    lazy var rootViewController: UIViewController = {
+        let controller = navigationController
+        
+        // Configure app
+        authServerAPI.delegate = loginCoordinator
+        loginView.delegate = loginCoordinator
+        faceController.delegate = loginCoordinator
+        alertController.rootViewController = loginController
+        
+        return controller
+    }()
     
     lazy var navigationController: UINavigationController = UINavigationController(rootViewController: loginController)
+    lazy var faceController: FaceController = FaceController(detector: faceDetector)
+    lazy var loginController: LoginController = LoginController(loginView: loginView)
+    lazy var alertController: AlertController = AlertController()
     
-    lazy var faceController: FaceController = {
-        let controller = FaceController(detector: faceDetector, recognizer: faceRecognizer, wireframe: wireframe)
-        controller.delegate = loginController
-        return controller
-    }()
+    // MARK: Coordinator
     
-    lazy var loginController: LoginController = {
-        let controller = LoginController(api: authServerAPI, loginView: loginView, wireframe: wireframe)
-        loginView.delegate = controller
-        alertController.rootViewController = controller
-        return controller
-    }()
-    
-    lazy var alertController: AlertController = {
-        let controller = AlertController()
-        authServerAPI.delegate = controller
-        return controller
-    }()
-    
-    // MARK: Wireframe
-    
-    lazy var wireframe: AppWireframe = AppWireframe(appFactory: self)
+    lazy var loginCoordinator: LoginCoordinator = LoginCoordinator(api: authServerAPI,
+                                                                   alertController: alertController,
+                                                                   faceController: faceController,
+                                                                   loginController: loginController)
 }

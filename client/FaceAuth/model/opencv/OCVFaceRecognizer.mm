@@ -54,6 +54,8 @@ static double const kRecognitionThreshold = 15.0;
 
 #pragma mark - Training
 
+- (NSUInteger)numberOfTrainingSamples { return _trainingImages.size(); }
+
 - (UIImage *)lastTrainingImage {
     return _trainingImages.empty() ? nil : [UIImage imageFromCVMat:_trainingImages.back()];
 }

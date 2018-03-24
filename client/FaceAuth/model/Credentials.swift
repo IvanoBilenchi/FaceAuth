@@ -14,9 +14,7 @@ struct LoginCredentials {
 struct RegistrationCredentials {
     let userName: String
     let password: String
-    let name: String
     let modelPath: String
-    let description: String?
 }
 
 class CredentialsBuilder {
@@ -25,8 +23,6 @@ class CredentialsBuilder {
     private let password: String
     private var image: UIImage?
     private var modelPath: String?
-    private var name: String?
-    private var description: String?
     
     init(userName: String, password: String) {
         self.userName = userName
@@ -35,8 +31,6 @@ class CredentialsBuilder {
     
     @discardableResult func set(image: UIImage) -> CredentialsBuilder { self.image = image; return self }
     @discardableResult func set(modelPath: String) -> CredentialsBuilder { self.modelPath = modelPath; return self }
-    @discardableResult func set(name: String) -> CredentialsBuilder { self.name = name; return self }
-    @discardableResult func set(description: String) -> CredentialsBuilder { self.description = description; return self }
     
     func buildLoginCredentials() -> LoginCredentials? {
         guard let image = image else { return nil }
@@ -44,7 +38,7 @@ class CredentialsBuilder {
     }
     
     func buildRegistrationCredentials() -> RegistrationCredentials? {
-        guard let modelPath = modelPath, let name = name else { return nil }
-        return RegistrationCredentials(userName: userName, password: password, name: name, modelPath: modelPath, description: description)
+        guard let modelPath = modelPath else { return nil }
+        return RegistrationCredentials(userName: userName, password: password, modelPath: modelPath)
     }
 }

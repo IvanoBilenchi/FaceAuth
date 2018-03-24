@@ -8,11 +8,7 @@ import UIKit
 
 protocol FaceControllerDelegate: class {
     func faceController(_ faceController: FaceController, didCaptureFace faceImage: UIImage)
-    func faceController(_ faceController: FaceController, didTrainModel modelPath: String)
-}
-
-protocol FaceWireframe: class {
-    func showLoginUI()
+    func faceController(_ faceController: FaceController, didTrainModel modelPath: String, lastCapturedFace: UIImage)
 }
 
 class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
@@ -29,6 +25,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     var mode: Mode = .recognize {
         didSet {
             if mode == .enroll {
+                recognizer = FaceRecognizer()
                 photoView.image = nil
                 photoView.isHidden = false
                 navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .done,
@@ -44,8 +41,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     // MARK: Private properties
     
     private let detector: FaceDetector
-    private let recognizer: FaceRecognizer
-    private weak var wireframe: FaceWireframe?
+    private var recognizer: FaceRecognizer?
     
     private var cameraView: CameraView { return view as! CameraView }
     
@@ -59,10 +55,8 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     
     // MARK: Lifecycle
     
-    init(detector: FaceDetector, recognizer: FaceRecognizer, wireframe: FaceWireframe) {
+    init(detector: FaceDetector) {
         self.detector = detector
-        self.recognizer = recognizer
-        self.wireframe = wireframe
         super.init(nibName: nil, bundle: nil)
         cameraView.delegate = self
         detector.delegate = self
@@ -95,6 +89,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         detector.startDetecting()
+        refreshDoneButton()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -121,21 +116,28 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         guard let observation = detector.lastObservation else { return }
         
         if mode == .enroll {
-            recognizer.add(observation)
-            photoView.image = recognizer.lastTrainingImage()
+            if let recognizer = recognizer {
+                recognizer.add(observation)
+                photoView.image = recognizer.lastTrainingImage
+                refreshDoneButton()
+            }
         } else {
             delegate?.faceController(self, didCaptureFace: FaceRecognizer.processedImage(from: observation))
-            wireframe?.showLoginUI()
         }
     }
     
     // MARK: Handlers
     
     @objc private func handleDoneButton() {
-        recognizer.train()
+        guard let recognizer = recognizer else { return }
         let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
+        
+        recognizer.train()
         recognizer.serializeModelToFile(atPath: modelPath)
-        delegate?.faceController(self, didTrainModel: modelPath)
-        wireframe?.showLoginUI()
+        delegate?.faceController(self, didTrainModel: modelPath, lastCapturedFace: recognizer.lastTrainingImage!)
+    }
+    
+    private func refreshDoneButton() {
+        navigationItem.rightBarButtonItem?.isEnabled = (recognizer?.numberOfTrainingSamples ?? 0) >= 10
     }
 }

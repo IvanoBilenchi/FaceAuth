@@ -21,6 +21,8 @@ struct Config {
         struct Path {
             static let login = "/login"
             static let registration = "/register"
+            static let update = "/update"
+            static let delete = "/delete"
         }
         
         struct Request {
@@ -50,9 +52,9 @@ struct Config {
             
             static let valSuccess = "ok"
             static let valInvalidRequest = "invalid_request"
+            static let valInternalError = "internal_error"
             
             static let valAlreadyRegistered = "already_registered"
-            static let valCouldNotAddUser = "could_not_add_user"
             
             static let valInvalidUserPass = "invalid_user_pass"
             static let valUnrecognizedFace = "unrecognized_face"

@@ -67,20 +67,16 @@ enum RegistrationResponse {
     static func from(response: HTTPURLResponse, data: Data? = nil) -> RegistrationResponse {
         var registrationResponse: RegistrationResponse?
         
-        switch response.statusCode {
-        case HTTPResponseCode.ok:
-            if let data = data,
-                let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: String],
-                let info = json[Config.API.Response.keyInfo] {
-                
-                switch info {
-                case API.Response.valSuccess: registrationResponse = .registered
-                case API.Response.valAlreadyRegistered: registrationResponse = .alreadyRegistered
-                default: break
-                }
+        if response.statusCode == HTTPResponseCode.ok,
+            let data = data,
+            let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: String],
+            let info = json[Config.API.Response.keyInfo] {
+            
+            switch info {
+            case API.Response.valSuccess: registrationResponse = .registered
+            case API.Response.valAlreadyRegistered: registrationResponse = .alreadyRegistered
+            default: break
             }
-        default:
-            break
         }
         
         if registrationResponse == nil {
@@ -89,5 +85,28 @@ enum RegistrationResponse {
         }
         
         return registrationResponse!
+    }
+}
+
+enum GenericResponse {
+    case ok
+    case error(message: String)
+    
+    static func from(response: HTTPURLResponse, data: Data? = nil) -> GenericResponse {
+        var genericResponse: GenericResponse?
+        
+        if response.statusCode == HTTPResponseCode.ok,
+            let data = data,
+            let json = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [String: String],
+            json[Config.API.Response.keyInfo] == API.Response.valSuccess {
+            genericResponse = .ok
+        }
+        
+        if genericResponse == nil {
+            let message = data.flatMap({ String(data: $0, encoding: .utf8) }) ?? ""
+            genericResponse = .error(message: "Status code: \(response.statusCode) - Data: \(message)")
+        }
+        
+        return genericResponse!
     }
 }

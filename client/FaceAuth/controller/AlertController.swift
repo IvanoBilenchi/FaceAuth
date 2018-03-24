@@ -5,74 +5,48 @@
 
 import Foundation
 
-class AlertController: AuthServerAPIDelegate {
+class AlertController {
     
     // MARK: Private properties
     
     weak var rootViewController: UIViewController?
     
-    // MARK: AuthServerAPIDelegate
+    // MARK: Public methods
     
-    func api(_ api: AuthServerAPI, didReceiveLoginResponse response: LoginResponse) {
-        guard let rootViewController = rootViewController else { return }
+    func showUserDetailsEntryUI(_ completionHandler: @escaping (_ name: String, _ description: String) -> Void) {
+        let alert = UIAlertController(title: "🖋 Registration successful", message: "\nPlease fill in your details.", preferredStyle: .alert)
         
-        let title: String
-        let message: String
-        let actions: [UIAlertAction]
+        alert.addTextField(configurationHandler: {
+            $0.placeholder = "Name"
+            $0.autocapitalizationType = .words
+        })
+        alert.addTextField(configurationHandler: {
+            $0.placeholder = "Description"
+            $0.autocapitalizationType = .sentences
+        })
+        alert.addAction(UIAlertAction(title: "Done", style: .default, handler: { _ in
+            completionHandler(alert.textFields![0].text ?? "", alert.textFields![1].text ?? "")
+        }))
         
-        switch response {
-        case .loggedIn(let userName, let name, let description):
-            title = "👤 Hello, " + name
-            message = "\nUser name: \(userName)\n\nDescription: \(description)"
-            actions = [UIAlertAction(title: "Bye", style: .default, handler: nil)]
-            
-        case .unrecognizedFace:
-            title = "👁️ You're lying"
-            message = "\nWho are you?"
-            actions = [UIAlertAction(title: "You got me", style: .default, handler: nil)]
-            
-        case .wrongUserPass:
-            title = "⛔ Access denied"
-            message = "\nInvalid username/password combination."
-            actions = [UIAlertAction(title: "Ok", style: .default, handler: nil)]
-            
-        case .error(let msg):
-            title = "🤔 Whoops"
-            message = "\n" + msg
-            actions = [UIAlertAction(title: "Oh come on", style: .default, handler: nil)]
-        }
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        actions.forEach({ alert.addAction($0) })
-        rootViewController.present(alert, animated: true, completion: nil)
+        rootViewController?.present(alert, animated: true)
     }
     
-    func api(_ api: AuthServerAPI, didReceiveRegistrationResponse response: RegistrationResponse) {
-        guard let rootViewController = rootViewController else { return }
+    func showLoggedInMenu(userName: String, name: String, description: String, deleteHandler: @escaping () -> Void) {
+        let alert = UIAlertController(title: "👤 Hello, \(name)", message: "\nUser name: \(userName)\n\nDescription: \(description)", preferredStyle: .alert)
         
-        let title: String
-        let message: String
-        let actions: [UIAlertAction]
+        alert.addAction(UIAlertAction(title: "Bye", style: .default))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in deleteHandler() }))
         
-        switch response {
-        case .registered:
-            title = "✅ Registration successful"
-            message = "\nYou may now login."
-            actions = [UIAlertAction(title: "Ok", style: .default, handler: nil)]
-            
-        case .alreadyRegistered:
-            title = "❌ Username in use"
-            message = "\nThis username is already taken. Please choose a new username."
-            actions = [UIAlertAction(title: "I'm so lucky", style: .default, handler: nil)]
-            
-        case .error(let msg):
-            title = "🤔 Whoops"
-            message = "\n" + msg
-            actions = [UIAlertAction(title: "Oh come on", style: .default, handler: nil)]
-        }
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        actions.forEach({ alert.addAction($0) })
-        rootViewController.present(alert, animated: true, completion: nil)
+        rootViewController?.present(alert, animated: true)
+    }
+    
+    func showErrorAlert(withMessage message: String) {
+        showAlert(withTitle: "🤔 Whoops", message: message, buttonTitle: "Oh come on")
+    }
+    
+    func showAlert(withTitle title: String, message: String, buttonTitle: String, handler: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: "\n" + message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: buttonTitle, style: .default, handler: { _ in handler?() }))
+        rootViewController?.present(alert, animated: true)
     }
 }

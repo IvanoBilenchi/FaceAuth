@@ -17,13 +17,16 @@ NS_ASSUME_NONNULL_BEGIN;
 
 #pragma mark - Training
 
-- (UIImage *)lastTrainingImage;
+@property (nonatomic, readonly) NSUInteger numberOfTrainingSamples;
+@property (nonatomic, copy, readonly, nullable) UIImage *lastTrainingImage;
+
 - (void)addFaceObservation:(OCVFaceObservation *)observation;
 - (void)train;
 
 #pragma mark - Prediction
 
-- (UIImage *)lastPredictedImage;
+@property (nonatomic, copy, readonly, nullable) UIImage *lastPredictedImage;
+
 - (BOOL)predict:(OCVFaceObservation *)observation;
 - (double)confidenceOfPrediction:(OCVFaceObservation *)observation;
 
