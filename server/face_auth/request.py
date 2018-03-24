@@ -11,12 +11,12 @@ class Request:
     """Base request class."""
 
     def __init__(self, request: FlaskRequest) -> None:
-        self.email: Optional[str] = request.form.get(API.Request.KEY_USER_NAME)
+        self.user_name: Optional[str] = request.form.get(API.Request.KEY_USER_NAME)
         self.password: Optional[str] = request.form.get(API.Request.KEY_PASSWORD)
         self._file: Optional[FileStorage] = None
 
     def is_valid(self) -> bool:
-        return True if self.email and self.password and self._file else False
+        return True if self.user_name and self.password and self._file else False
 
     def save_file(self, file_path: str) -> None:
         with suppress(FileNotFoundError):
@@ -42,8 +42,6 @@ class RegistrationRequest(Request):
 
     def __init__(self, request: FlaskRequest) -> None:
         super(RegistrationRequest, self).__init__(request)
-        self.name: Optional[str] = request.form.get(API.Request.KEY_NAME)
-        self.description: Optional[str] = request.form.get(API.Request.KEY_DESCRIPTION)
 
         model_config = API.Request.Model
         model_file = request.files.get(model_config.KEY)
@@ -51,5 +49,11 @@ class RegistrationRequest(Request):
         if model_file and model_file.filename == model_config.FILE_NAME and model_file.mimetype == model_config.MIME:
             self._file = model_file
 
-    def is_valid(self) -> bool:
-        return super(RegistrationRequest, self).is_valid() and self.name
+
+class UpdateRequest(LoginRequest):
+    """Update request."""
+
+    def __init__(self, request: FlaskRequest) -> None:
+        super(UpdateRequest, self).__init__(request)
+        self.name: Optional[str] = request.form.get(API.Request.KEY_NAME)
+        self.description: Optional[str] = request.form.get(API.Request.KEY_DESCRIPTION)

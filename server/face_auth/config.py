@@ -17,6 +17,8 @@ class API:
     class Path:
         LOGIN = '/login'
         REGISTRATION = '/register'
+        UPDATE = '/update'
+        DELETE = '/delete'
 
     class Request:
         KEY_USER_NAME = 'user'
@@ -42,9 +44,9 @@ class API:
 
         VAL_SUCCESS = 'ok'
         VAL_INVALID_REQUEST = 'invalid_request'
+        VAL_INTERNAL_ERROR = 'internal_error'
 
         VAL_ALREADY_REGISTERED = 'already_registered'
-        VAL_COULD_NOT_ADD_USER = 'could_not_add_user'
 
         VAL_INVALID_USER_PASS = 'invalid_user_pass'
         VAL_UNRECOGNIZED_FACE = 'unrecognized_face'

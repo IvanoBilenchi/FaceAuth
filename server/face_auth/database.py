@@ -34,17 +34,29 @@ class Database:
             self.__connection.close()
             self.__connection = None
 
-    def insert_user(self, email: str, pwd_hash: str, name: str, description: Optional[str] = None) -> Optional[User]:
+    def insert_user(self, user_name: str, pwd_hash: str) -> Optional[User]:
         """Inserts a new user with the specified details."""
         try:
             cur = self.__cursor()
-            cur.execute('INSERT INTO users (email, password, name, description) VALUES (?,?,?,?)',
-                        [email, pwd_hash, name, description])
+            cur.execute('INSERT INTO users (user_name, password) VALUES (?,?)',
+                        [user_name, pwd_hash])
             self.__commit()
         except sql.Error:
             return None
 
-        return User(uid=cur.lastrowid, email=email, name=name, description=description)
+        return User(uid=cur.lastrowid, user_name=user_name)
+
+    def update_user(self, user: User) -> bool:
+        """Updates details for the specified user."""
+        try:
+            cur = self.__cursor()
+            cur.execute('UPDATE users SET user_name=?, name=?, description=? WHERE uid=?',
+                        [user.user_name, user.name, user.description, user.uid])
+            self.__commit()
+        except sql.Error:
+            return False
+
+        return True
 
     def delete_user(self, user: User) -> bool:
         """Deletes an existing user."""
@@ -56,16 +68,16 @@ class Database:
 
         return True
 
-    def get_user(self, email: str) -> Optional[User]:
+    def get_user(self, user_name: str) -> Optional[User]:
         """Retrieves info about an existing user."""
         try:
             cur = self.__cursor()
-            cur.execute('SELECT uid, name, description FROM users WHERE email=?', [email])
+            cur.execute('SELECT uid, name, description FROM users WHERE user_name=?', [user_name])
             usr = cur.fetchone()
         except sql.Error:
             return None
 
-        return User(uid=usr[0], email=email, name=usr[1], description=usr[2]) if usr else None
+        return User(uid=usr[0], user_name=user_name, name=usr[1], description=usr[2]) if usr else None
 
     def get_password(self, user: User) -> Optional[str]:
         """Retrieves the hashed password of an existing user."""

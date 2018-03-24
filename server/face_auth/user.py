@@ -22,9 +22,9 @@ class User:
         """Path to the last photo."""
         return path.join(self.user_dir, 'last_face.png')
 
-    def __init__(self, uid: int, email: str, name: str, description: Optional[str] = None) -> None:
+    def __init__(self, uid: int, user_name: str, name: Optional[str] = None, description: Optional[str] = None) -> None:
         """Initializes a new user."""
         self.uid: int = uid
-        self.email: str = email
-        self.name: str = name
+        self.user_name: str = user_name
+        self.name: str = name if name is not None else ""
         self.description: str = description if description is not None else ""
