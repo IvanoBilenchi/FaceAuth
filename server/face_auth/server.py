@@ -1,6 +1,7 @@
 from flask import jsonify, request
+from functools import wraps
 from shutil import rmtree
-from typing import Any, Tuple, Union
+from typing import Any, Callable, Tuple, Union
 
 from . import factory
 from .authenticator import Authenticator
@@ -32,26 +33,29 @@ def internal_error() -> Tuple[Any, int]:
 
 # Login
 
-def authenticate(login_request: LoginRequest) -> Union[User, Tuple[Any, int]]:
-    """Authenticates a login request.
+def require_login(f: Callable[[User], Tuple[Any, int]]):
+    @wraps(f)
+    def authenticate() -> Union[User, Tuple[Any, int]]:
+        """Authenticates a login request."""
+        login_request = LoginRequest(request)
 
-    :return: User on success, flask error response on error.
-    """
-    if not login_request.is_valid():
-        return invalid_request()
+        if not login_request.is_valid():
+            return invalid_request()
 
-    auth: Authenticator = factory.authenticator(login_request.user_name)
+        auth: Authenticator = factory.authenticator(login_request.user_name)
 
-    if not auth.verify_password(factory.database(), login_request.password):
-        return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_USER_PASS}), 401
+        if not auth.verify_password(factory.database(), login_request.password):
+            return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_USER_PASS}), 401
 
-    user = auth.user
-    login_request.save_file(user.face_path)
+        user = auth.user
+        login_request.save_file(user.face_path)
 
-    if not auth.verify_face():
-        return jsonify({API.Response.KEY_INFO: API.Response.VAL_UNRECOGNIZED_FACE}), 401
+        if not auth.verify_face():
+            return jsonify({API.Response.KEY_INFO: API.Response.VAL_UNRECOGNIZED_FACE}), 401
 
-    return user
+        return f(user)
+
+    return authenticate
 
 
 # Routes
@@ -80,10 +84,9 @@ def register():
 
 
 @app.route(API.Path.LOGIN, methods=['POST'])
-def login():
-    user = authenticate(LoginRequest(request))
-
-    return user if not isinstance(user, User) else jsonify({
+@require_login
+def login(user: User):
+    return jsonify({
         API.Response.KEY_INFO: API.Response.VAL_SUCCESS,
         API.Response.KEY_USER_NAME: user.user_name,
         API.Response.KEY_NAME: user.name,
@@ -92,13 +95,9 @@ def login():
 
 
 @app.route(API.Path.UPDATE, methods=['POST'])
-def update():
+@require_login
+def update(user: User):
     update_request = UpdateRequest(request)
-    user = authenticate(UpdateRequest(request))
-
-    if not isinstance(user, User):
-        return user
-
     user.name = update_request.name
     user.description = update_request.description
 
@@ -109,12 +108,8 @@ def update():
 
 
 @app.route(API.Path.DELETE, methods=['POST'])
-def delete():
-    user = authenticate(LoginRequest(request))
-
-    if not isinstance(user, User):
-        return user
-
+@require_login
+def delete(user: User):
     if not factory.database().delete_user(user):
         return internal_error()
 

@@ -18,6 +18,12 @@ class Path:
 class API:
     """API config namespace."""
 
+    class Server:
+        HOST = '0.0.0.0'
+        PORT = 5000
+        HTTPS_ENABLED = True
+        HTTPS_CONFIG = (Path.HTTPS_CERT_FILE, Path.HTTPS_KEY_FILE)
+
     class Path:
         LOGIN = '/login'
         REGISTRATION = '/register'
@@ -57,7 +63,7 @@ class API:
 
 
 # Flask
-DEBUG = True
+DEBUG = False
 SECRET_KEY = b'\x08\x12\xddR\x1e\xaf\x91\x7f\xd2\xa3\r\x16\x8ex\\\xe9\xaeMQ\x02\xc4W\xd4\xeb'
 
 # Authentication
