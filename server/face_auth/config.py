@@ -7,8 +7,12 @@ class Path:
     RES_DIR = path.join(ROOT_DIR, 'res')
     USERS_DIR = path.join(RES_DIR, 'users')
     UPLOAD_DIR = path.join(RES_DIR, 'upload')
+    HTTPS_DIR = path.join(RES_DIR, 'certs')
+
     DB_FILE = path.join(USERS_DIR, 'users.db')
     DB_SCHEMA_FILE = path.join(USERS_DIR, 'schema.sql')
+    HTTPS_CERT_FILE = path.join(HTTPS_DIR, 'cert.pem')
+    HTTPS_KEY_FILE = path.join(HTTPS_DIR, 'key.pem')
 
 
 class API:

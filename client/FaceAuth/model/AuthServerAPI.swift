@@ -12,7 +12,7 @@ protocol AuthServerAPIDelegate: class {
     func api(_ api: AuthServerAPI, didReceiveDeleteResponse response: GenericResponse)
 }
 
-class AuthServerAPI {
+class AuthServerAPI: NSObject, URLSessionDelegate {
     
     private typealias API = Config.API
     
@@ -44,7 +44,7 @@ class AuthServerAPI {
         let request = loginRequest(withUrl: URL(string: server + API.Path.login)!,
                                    credentials: credentials)
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session().dataTask(with: request) { data, response, error in
             let loginResponse: LoginResponse
             
             if let response = response as? HTTPURLResponse, error == nil {
@@ -75,7 +75,7 @@ class AuthServerAPI {
             ]
         )
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session().dataTask(with: request) { data, response, error in
             let registrationResponse: RegistrationResponse
             
             if let response = response as? HTTPURLResponse, error == nil {
@@ -103,7 +103,7 @@ class AuthServerAPI {
                                     .parameter(key: API.Request.keyDescription, value: description)
             ])
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session().dataTask(with: request) { data, response, error in
             let updateResponse: GenericResponse
             
             if let response = response as? HTTPURLResponse, error == nil {
@@ -125,7 +125,7 @@ class AuthServerAPI {
         let request = loginRequest(withUrl: URL(string: server + API.Path.delete)!,
                                    credentials: credentials)
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
+        session().dataTask(with: request) { data, response, error in
             let deleteResponse: GenericResponse
             
             if let response = response as? HTTPURLResponse, error == nil {
@@ -141,7 +141,31 @@ class AuthServerAPI {
         }.resume()
     }
     
+    // MARK: URLSessionDelegate
+    
+    func urlSession(_ session: URLSession,
+                    didReceive challenge: URLAuthenticationChallenge,
+                    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+
+        // Check via self-signed cert
+        if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust),
+            let trust = challenge.protectionSpace.serverTrust,
+            let data = NSData(contentsOfFile: Config.API.Server.httpsCert),
+            let cert = SecCertificateCreateWithData(nil, data) {
+            SecTrustSetAnchorCertificates(trust, [cert] as CFArray)
+            completionHandler(.useCredential, URLCredential(trust: trust))
+            return
+        }
+        
+        // Fail
+        completionHandler(.cancelAuthenticationChallenge, nil)
+    }
+    
     // MARK: Private methods
+    
+    private func session() -> URLSession {
+        return URLSession(configuration: .default, delegate: self, delegateQueue: nil)
+    }
     
     private func loginRequest(withUrl url: URL,
                               credentials: LoginCredentials,

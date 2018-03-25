@@ -1,4 +1,5 @@
 from flask import Flask, g
+from flask_sslify import SSLify
 
 from . import config
 from .authenticator import Authenticator
@@ -11,6 +12,7 @@ def shared_app() -> Flask:
 
     flask_app = Flask('face_auth')
     flask_app.config.from_object('face_auth.config')
+    SSLify(flask_app, age=300, subdomains=True, permanent=True)
 
     @flask_app.teardown_appcontext
     def teardown(exception: Exception):

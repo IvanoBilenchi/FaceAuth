@@ -15,7 +15,8 @@ struct Config {
         struct Server {
             static let name = "MacBook-Pro-di-Ivano.local"
             static let port: UInt = 5000
-            static let useHTTPS = false
+            static let useHTTPS = true
+            static let httpsCert = Bundle.main.path(forResource: "cert", ofType: "der")!
         }
         
         struct Path {
