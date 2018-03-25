@@ -64,6 +64,10 @@ static double const kRecognitionThreshold = 15.0;
     _trainingImages.push_back([[self class] processedMatFromObservation:observation]);
 }
 
+- (void)discardLastFaceObservation {
+    if (_trainingImages.size()) _trainingImages.pop_back();
+}
+
 - (void)train {
     std::vector<int> labels;
     for (int i = 0; i < _trainingImages.size(); ++i) labels.push_back(0);

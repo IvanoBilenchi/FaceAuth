@@ -204,8 +204,6 @@ private extension UITextField {
 private extension UIButton {
     static func defaultButton(forLoginView loginView: LoginView) -> UIButton {
         let btn = UIButton(type: .system)
-        btn.setTitleColor(.red, for: .normal)
-        btn.setTitleColor(.gray, for: .disabled)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
         btn.isEnabled = false
         btn.addTarget(loginView, action: #selector(LoginView.handleButtonPress(_:)), for: .touchUpInside)

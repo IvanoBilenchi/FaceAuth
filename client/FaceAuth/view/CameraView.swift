@@ -8,6 +8,7 @@ import UIKit
 
 protocol CameraViewDelegate: class {
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView)
+    func cameraViewDidPressDiscardButton(_ cameraView: CameraView)
 }
 
 class CameraView: UIView {
@@ -31,6 +32,7 @@ class CameraView: UIView {
         addSubview(view)
         view.contentView.addSubview(cameraButton)
         view.contentView.addSubview(photoPreview)
+        view.contentView.addSubview(discardButton)
         return view
     }()
     
@@ -44,6 +46,14 @@ class CameraView: UIView {
     private lazy var cameraButton: CameraButton = {
         let button = CameraButton(frame: .zero)
         button.addTarget(self, action: #selector(handleCameraButtonPress), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var discardButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("Discard", for: .normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
+        button.addTarget(self, action: #selector(handleDiscardButtonPress), for: .touchUpInside)
         return button
     }()
     
@@ -82,6 +92,10 @@ class CameraView: UIView {
         photoPreview.heightAnchor.constraint(equalToConstant: barSize).isActive = true
         photoPreview.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
         photoPreview.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
+        
+        discardButton.translatesAutoresizingMaskIntoConstraints = false
+        discardButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30.0).isActive = true
+        discardButton.centerYAnchor.constraint(equalTo: photoPreview.centerYAnchor).isActive = true
         
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         cameraButton.widthAnchor.constraint(equalToConstant: buttonSize).isActive = true
@@ -138,11 +152,16 @@ class CameraView: UIView {
     func setPreview(_ image: UIImage?) {
         photoPreview.image = image
         photoPreview.isHidden = image == nil
+        discardButton.isHidden = image == nil
     }
     
-    // MARK: Private methods
+    // MARK: Handlers
     
     @objc private func handleCameraButtonPress() {
         delegate?.cameraViewDidPressCaptureButton(self)
+    }
+    
+    @objc private func handleDiscardButtonPress() {
+        delegate?.cameraViewDidPressDiscardButton(self)
     }
 }

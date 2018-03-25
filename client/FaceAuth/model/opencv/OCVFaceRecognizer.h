@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN;
 @property (nonatomic, copy, readonly, nullable) UIImage *lastTrainingImage;
 
 - (void)addFaceObservation:(OCVFaceObservation *)observation;
+- (void)discardLastFaceObservation;
 - (void)train;
 
 #pragma mark - Prediction

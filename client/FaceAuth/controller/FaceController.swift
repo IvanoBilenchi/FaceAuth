@@ -99,6 +99,13 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         }
     }
     
+    func cameraViewDidPressDiscardButton(_ cameraView: CameraView) {
+        guard let recognizer = recognizer else { return }
+        recognizer.discardLastFaceObservation()
+        cameraView.setPreview(recognizer.lastTrainingImage)
+        refreshDoneButton()
+    }
+    
     // MARK: Handlers
     
     @objc private func handleDoneButton() {

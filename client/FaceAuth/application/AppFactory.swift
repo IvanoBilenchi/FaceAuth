@@ -62,6 +62,8 @@ class AppFactory {
         alertController.rootViewController = loginController
         
         // Stylize app
+        UIButton.appearance().setTitleColor(.red, for: .normal)
+        UIButton.appearance().setTitleColor(.gray, for: .disabled)
         UIBarButtonItem.appearance().tintColor = .red
         UINavigationBar.appearance().barStyle = .black
         
