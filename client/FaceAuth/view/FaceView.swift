@@ -18,10 +18,10 @@ class FaceView: UIView {
         backgroundColor = .clear
         
         let layer = shapeLayer
-        layer.borderColor = UIColor.red.cgColor
-        layer.strokeColor = UIColor.yellow.cgColor
+        layer.borderColor = UIColor.red.withAlphaComponent(0.7).cgColor
+        layer.strokeColor = UIColor.yellow.withAlphaComponent(0.7).cgColor
         layer.lineWidth = 2.0
-        layer.cornerRadius = 5.0
+        layer.cornerRadius = 10.0
         layer.borderWidth = 4.0
     }
     
