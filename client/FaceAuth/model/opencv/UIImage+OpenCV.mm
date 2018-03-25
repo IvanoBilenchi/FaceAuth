@@ -17,6 +17,7 @@
 static int const kBlurKernelLength = 3;
 static CGFloat const kImageMaxSize = 300.0;
 static CGFloat const kEyeDistanceMultiplier = 2.0;
+static CGFloat const kEyeRotationMultiplier = 1.6;
 
 #pragma mark - Filters
 
@@ -114,7 +115,7 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
 
 - (cv::Mat)faceRecCVMatWithBoundingBox:(CGRect)boundingBox faceAngle:(CGFloat)faceAngle eyeDistance:(CGFloat)eyeDistance {
     // Crop and align
-    UIImage *image = [[self cropped:denormalizedRect(boundingBox, self.size)] rotated:-faceAngle];
+    UIImage *image = [[self cropped:denormalizedRect(boundingBox, self.size)] rotated:-(faceAngle * kEyeRotationMultiplier)];
     
     // Resize
     cv::Mat mat = [image cvMatResized:CGSizeMake(kImageMaxSize, kImageMaxSize)];
