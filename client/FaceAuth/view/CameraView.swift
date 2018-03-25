@@ -26,16 +26,40 @@ class CameraView: UIView {
         return cameraLayer.session!
     }
     
-    private lazy var faceView: FaceView = FaceView(frame: .zero)
+    private lazy var bottomBar: UIVisualEffectView = {
+        let view = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        addSubview(view)
+        view.contentView.addSubview(cameraButton)
+        view.contentView.addSubview(photoPreview)
+        return view
+    }()
     
-    private lazy var cameraButton: CameraButton = CameraButton(frame: .zero)
+    private lazy var faceView: FaceView = {
+        let view = FaceView(frame: .zero)
+        view.alpha = 0.0
+        addSubview(view)
+        return view
+    }()
+    
+    private lazy var cameraButton: CameraButton = {
+        let button = CameraButton(frame: .zero)
+        button.addTarget(self, action: #selector(handleCameraButtonPress), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var photoPreview: UIImageView = {
+        let imgView = UIImageView(frame: .zero)
+        imgView.backgroundColor = .black
+        imgView.layer.borderWidth = 3.0
+        imgView.layer.borderColor = UIColor.white.cgColor
+        return imgView
+    }()
     
     // MARK: Lifecycle
     
     init(session: AVCaptureSession) {
         super.init(frame: .zero)
         cameraLayer.session = session
-        setupSubviews()
         setupConstraints()
     }
     
@@ -43,21 +67,26 @@ class CameraView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupSubviews() {
-        // faceView
-        faceView.alpha = 0.0
-        addSubview(faceView)
-        
-        // photoCaptureButton
-        cameraButton.addTarget(self, action: #selector(handleCameraButtonPress), for: .touchUpInside)
-        addSubview(cameraButton)
-    }
-    
     private func setupConstraints() {
+        let barSize: CGFloat = 100.0
+        let buttonSize: CGFloat = 80.0
+        
+        bottomBar.translatesAutoresizingMaskIntoConstraints = false
+        bottomBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -barSize).isActive = true
+        bottomBar.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        bottomBar.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
+        bottomBar.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+        
+        photoPreview.translatesAutoresizingMaskIntoConstraints = false
+        photoPreview.widthAnchor.constraint(equalToConstant: barSize).isActive = true
+        photoPreview.heightAnchor.constraint(equalToConstant: barSize).isActive = true
+        photoPreview.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor).isActive = true
+        photoPreview.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
+        
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
-        cameraButton.widthAnchor.constraint(equalToConstant: 80.0).isActive = true
-        cameraButton.heightAnchor.constraint(equalTo: cameraButton.widthAnchor).isActive = true
-        cameraButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0).isActive = true
+        cameraButton.widthAnchor.constraint(equalToConstant: buttonSize).isActive = true
+        cameraButton.heightAnchor.constraint(equalToConstant: buttonSize).isActive = true
+        cameraButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: (buttonSize - barSize) / 2.0).isActive = true
         cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     }
     
@@ -104,6 +133,11 @@ class CameraView: UIView {
         UIView.animate(withDuration: 0.2) {
             self.cameraButton.alpha = enabled ? 1.0 : 0.5
         }
+    }
+    
+    func setPreview(_ image: UIImage?) {
+        photoPreview.image = image
+        photoPreview.isHidden = image == nil
     }
     
     // MARK: Private methods

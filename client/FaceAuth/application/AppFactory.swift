@@ -43,6 +43,8 @@ class AppFactory {
     
     // MARK: View
     
+    lazy var cameraView: CameraView = CameraView(session: cameraSession)
+    
     lazy var loginView: LoginView = LoginView(minUserNameLength: Config.Security.minUserNameLength,
                                               minPasswordLength: Config.Security.minPasswordLength)
     
@@ -53,17 +55,21 @@ class AppFactory {
         
         // Configure app
         authServerAPI.delegate = loginCoordinator
+        faceDetector.delegate = faceController
+        cameraView.delegate = faceController
         loginView.delegate = loginCoordinator
         faceController.delegate = loginCoordinator
         alertController.rootViewController = loginController
         
+        // Stylize app
         UIBarButtonItem.appearance().tintColor = .red
+        UINavigationBar.appearance().barStyle = .black
         
         return controller
     }()
     
     lazy var navigationController: UINavigationController = UINavigationController(rootViewController: loginController)
-    lazy var faceController: FaceController = FaceController(detector: faceDetector)
+    lazy var faceController: FaceController = FaceController(detector: faceDetector, cameraView: cameraView)
     lazy var loginController: LoginController = LoginController(loginView: loginView)
     lazy var alertController: AlertController = AlertController()
     

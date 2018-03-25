@@ -24,15 +24,14 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     
     var mode: Mode = .recognize {
         didSet {
+            cameraView.setPreview(nil)
+            
             if mode == .enroll {
                 recognizer = FaceRecognizer()
-                photoView.image = nil
-                photoView.isHidden = false
                 navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .done,
                                                                          target: self,
                                                                          action: #selector(handleDoneButton))
             } else {
-                photoView.isHidden = true
                 navigationItem.rightBarButtonItem = nil
             }
         }
@@ -42,49 +41,23 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     
     private let detector: FaceDetector
     private var recognizer: FaceRecognizer?
-    
-    private var cameraView: CameraView { return view as! CameraView }
-    
-    private lazy var photoView: UIImageView = {
-        let imgView = UIImageView(frame: .zero)
-        imgView.backgroundColor = .black
-        imgView.layer.borderWidth = 3.0
-        imgView.layer.borderColor = UIColor.white.cgColor
-        return imgView
-    }()
+    private let cameraView: CameraView
     
     // MARK: Lifecycle
     
-    init(detector: FaceDetector) {
+    init(detector: FaceDetector, cameraView: CameraView) {
         self.detector = detector
+        self.cameraView = cameraView
         super.init(nibName: nil, bundle: nil)
-        cameraView.delegate = self
-        detector.delegate = self
-        setupSubviews()
-        setupConstraints()
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupSubviews() {
-        view.addSubview(photoView)
-    }
-    
-    private func setupConstraints() {
-        photoView.translatesAutoresizingMaskIntoConstraints = false
-        photoView.widthAnchor.constraint(equalToConstant: 100.0).isActive = true
-        photoView.heightAnchor.constraint(equalTo: photoView.widthAnchor).isActive = true
-        photoView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        photoView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-    }
-    
     // MARK: UIViewController
     
-    override func loadView() {
-        view = CameraView(session: detector.session)
-    }
+    override func loadView() { view = cameraView }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -118,7 +91,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         if mode == .enroll {
             if let recognizer = recognizer {
                 recognizer.add(observation)
-                photoView.image = recognizer.lastTrainingImage
+                cameraView.setPreview(recognizer.lastTrainingImage)
                 refreshDoneButton()
             }
         } else {
