@@ -38,8 +38,7 @@ static CIContext *ciContext;
 @dynamic angle;
 
 - (CGFloat)angle {
-    CGFloat angle = atan2(_leftEye.y - _rightEye.y, _leftEye.x - _rightEye.x);
-    angle += M_PI_2;
+    CGFloat angle = atan2(_leftEye.x - _rightEye.x, _rightEye.y - _leftEye.y);
     while (angle < -M_PI) angle += M_PI;
     while (angle > M_PI) angle -= M_PI;
     return angle;

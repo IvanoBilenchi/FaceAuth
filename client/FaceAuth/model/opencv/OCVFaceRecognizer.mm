@@ -43,9 +43,7 @@ static double const kRecognitionThreshold = 15.0;
 #pragma mark - Manipulation
 
 + (cv::Mat)processedMatFromObservation:(OCVFaceObservation *)observation {
-    return [observation.image faceRecCVMatWithBoundingBox:observation.boundingBox
-                                                faceAngle:observation.angle
-                                              eyeDistance:observation.eyeDistance];
+    return [UIImage cvMatWithFaceObservation:observation];
 }
 
 + (UIImage *)processedImageFromObservation:(OCVFaceObservation *)observation {

@@ -6,6 +6,7 @@
 //
 
 #import "UIImage+OpenCV.h"
+#import "OCVFaceObservation.h"
 
 #ifdef __cplusplus
 #undef NO
@@ -113,9 +114,14 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
     return finalImage;
 }
 
-- (cv::Mat)faceRecCVMatWithBoundingBox:(CGRect)boundingBox faceAngle:(CGFloat)faceAngle eyeDistance:(CGFloat)eyeDistance {
-    // Crop and align
-    UIImage *image = [[self cropped:denormalizedRect(boundingBox, self.size)] rotated:-(faceAngle * kEyeRotationMultiplier)];
++ (cv::Mat)cvMatWithFaceObservation:(OCVFaceObservation *)observation {
+    UIImage *image = observation.image;
+    
+    // Crop
+    image = [image cropped:denormalizedRect(observation.boundingBox, image.size)];
+    
+    // Align
+    image = [image rotated:-(observation.angle * kEyeRotationMultiplier)];
     
     // Resize
     cv::Mat mat = [image cvMatResized:CGSizeMake(kImageMaxSize, kImageMaxSize)];
@@ -130,7 +136,7 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
     mat = blur(mat);
     
     // Remove background noise
-    mat = maskedToEllpise(mat, (int)(kImageMaxSize * eyeDistance * kEyeDistanceMultiplier / boundingBox.size.width));
+    mat = maskedToEllpise(mat, (int)(kImageMaxSize * observation.eyeDistance * kEyeDistanceMultiplier / observation.boundingBox.size.width));
     
     return mat;
 }

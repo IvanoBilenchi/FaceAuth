@@ -5,11 +5,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class OCVFaceObservation;
+
 namespace cv { class Mat; }
 
 @interface UIImage (OpenCV)
 
 + (UIImage *)imageFromCVMat:(cv::Mat)cvMat;
-- (cv::Mat)faceRecCVMatWithBoundingBox:(CGRect)boundingBox faceAngle:(CGFloat)faceAngle eyeDistance:(CGFloat)eyeDistance;
++ (cv::Mat)cvMatWithFaceObservation:(OCVFaceObservation *)observation;
 
 @end
