@@ -15,6 +15,16 @@ class Path:
     HTTPS_KEY_FILE = path.join(HTTPS_DIR, 'key.pem')
 
 
+class Validation:
+    """Validation config namespace."""
+    USER_LENGTH_RANGE = range(8, 41)
+    PASS_LENGTH_RANGE = range(8, 41)
+    NAME_LENGTH_RANGE = range(0, 101)
+    DESC_LENGTH_RANGE = range(0, 101)
+    PHOTO_SIZE_RANGE = range(1, 1024 * 1024)
+    MODEL_SIZE_RANGE = range(1, 10 * 1024 * 1024)
+
+
 class API:
     """API config namespace."""
 
@@ -65,6 +75,7 @@ class API:
 # Flask
 DEBUG = False
 SECRET_KEY = b'\x08\x12\xddR\x1e\xaf\x91\x7f\xd2\xa3\r\x16\x8ex\\\xe9\xaeMQ\x02\xc4W\xd4\xeb'
+MAX_CONTENT_LENGTH = 20 * 1024 * 1024
 
 # Authentication
 FACE_RECOGNITION_THRESHOLD = 15.0

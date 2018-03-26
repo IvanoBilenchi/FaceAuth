@@ -4,7 +4,7 @@ from flask import Request as FlaskRequest
 from typing import Optional
 from werkzeug.datastructures import FileStorage
 
-from .config import API
+from .config import API, Validation
 
 
 class Request:
@@ -16,7 +16,24 @@ class Request:
         self._file: Optional[FileStorage] = None
 
     def is_valid(self) -> bool:
-        return True if self.user_name and self.password and self._file else False
+        """Perform very basic field validation."""
+        if not (self.user_name and len(self.user_name) in Validation.USER_LENGTH_RANGE):
+            return False
+
+        if not (self.password and len(self.password) in Validation.PASS_LENGTH_RANGE):
+            return False
+
+        return True
+
+    def file_size(self) -> int:
+        """Gets the size of the uploaded file."""
+        if not self._file:
+            return 0
+
+        self._file.stream.seek(0, os.SEEK_END)
+        size = self._file.stream.tell()
+        self._file.stream.seek(0)
+        return size
 
     def save_file(self, file_path: str) -> None:
         with suppress(FileNotFoundError):
@@ -36,6 +53,11 @@ class LoginRequest(Request):
         if face_file and face_file.filename == face_config.FILE_NAME and face_file.mimetype == face_config.MIME:
             self._file = face_file
 
+    def is_valid(self) -> bool:
+        if not super(LoginRequest, self).is_valid():
+            return False
+        return self.file_size() in Validation.PHOTO_SIZE_RANGE
+
 
 class RegistrationRequest(Request):
     """Registration request."""
@@ -49,6 +71,11 @@ class RegistrationRequest(Request):
         if model_file and model_file.filename == model_config.FILE_NAME and model_file.mimetype == model_config.MIME:
             self._file = model_file
 
+    def is_valid(self) -> bool:
+        if not super(RegistrationRequest, self).is_valid():
+            return False
+        return self.file_size() in Validation.MODEL_SIZE_RANGE
+
 
 class UpdateRequest(LoginRequest):
     """Update request."""
@@ -57,3 +84,15 @@ class UpdateRequest(LoginRequest):
         super(UpdateRequest, self).__init__(request)
         self.name: Optional[str] = request.form.get(API.Request.KEY_NAME)
         self.description: Optional[str] = request.form.get(API.Request.KEY_DESCRIPTION)
+
+    def is_valid(self) -> bool:
+        if not super(UpdateRequest, self).is_valid():
+            return False
+
+        if self.name and len(self.name) not in Validation.NAME_LENGTH_RANGE:
+            return False
+
+        if self.description and len(self.description) not in Validation.DESC_LENGTH_RANGE:
+            return False
+
+        return True
