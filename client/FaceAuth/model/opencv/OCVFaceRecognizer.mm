@@ -11,7 +11,8 @@
 
 #import "OCVFaceRecognizer.h"
 #import "OCVFaceObservation.h"
-#import "UIImage+OpenCV.h"
+#import "OCVFaceObservation+OpenCV.h"
+#import "UIImage+OCVUtils.h"
 
 #pragma mark - Constants
 
@@ -42,12 +43,8 @@ static double const kRecognitionThreshold = 15.0;
 
 #pragma mark - Manipulation
 
-+ (cv::Mat)processedMatFromObservation:(OCVFaceObservation *)observation {
-    return [UIImage cvMatWithFaceObservation:observation];
-}
-
 + (UIImage *)processedImageFromObservation:(OCVFaceObservation *)observation {
-    return [UIImage imageFromCVMat:[self processedMatFromObservation:observation]];
+    return [UIImage imageFromCVMat:[observation processedCVMat]];
 }
 
 #pragma mark - Training
@@ -59,7 +56,7 @@ static double const kRecognitionThreshold = 15.0;
 }
 
 - (void)addFaceObservation:(OCVFaceObservation *)observation {
-    _trainingImages.push_back([[self class] processedMatFromObservation:observation]);
+    _trainingImages.push_back([observation processedCVMat]);
 }
 
 - (void)discardLastFaceObservation {
@@ -80,7 +77,7 @@ static double const kRecognitionThreshold = 15.0;
 
 - (double)confidenceOfPrediction:(OCVFaceObservation *)observation {
     int label; double confidence;
-    _lastPredictedImage = [[self class] processedMatFromObservation:observation];
+    _lastPredictedImage = [observation processedCVMat];
     _faceClassifier->predict(_lastPredictedImage, label, confidence);
     return label == 0 ? confidence : DBL_MAX;
 }
