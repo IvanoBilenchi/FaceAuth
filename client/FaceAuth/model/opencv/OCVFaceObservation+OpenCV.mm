@@ -15,7 +15,7 @@
 
 static int const kBlurKernelLength = 3;
 static CGFloat const kImageMaxSize = 300.0;
-static CGFloat const kEyeDistanceMultiplier = 2.0;
+static CGFloat const kEyeDistanceMultiplier = 1.8;
 static CGFloat const kEyeRotationMultiplier = 1.6;
 
 #pragma mark - Filters
@@ -95,11 +95,11 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
     // To grayscale
     mat = toGray(mat);
     
-    // Normalize histogram
-    mat = applyCLAHE(mat);
-    
     // Blur
     mat = blur(mat);
+    
+    // Normalize histogram
+    mat = applyCLAHE(mat);
     
     // Remove background noise
     int hSize = (int)(kImageMaxSize * self.eyeDistance * kEyeDistanceMultiplier / self.boundingBox.size.width);
