@@ -32,7 +32,6 @@ class API:
         HOST = '0.0.0.0'
         PORT = 5000
         HTTPS_ENABLED = True
-        HTTPS_CONFIG = (Path.HTTPS_CERT_FILE, Path.HTTPS_KEY_FILE)
 
     class Path:
         LOGIN = '/login'
