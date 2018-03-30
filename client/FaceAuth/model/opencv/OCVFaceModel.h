@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN;
 
-@interface OCVFaceRecognizer : NSObject
+@interface OCVFaceModel : NSObject
 
 #pragma mark - Manipulation
 

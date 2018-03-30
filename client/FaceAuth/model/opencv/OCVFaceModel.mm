@@ -9,7 +9,7 @@
 #import <opencv2/face.hpp>
 #endif
 
-#import "OCVFaceRecognizer.h"
+#import "OCVFaceModel.h"
 #import "OCVFaceObservation.h"
 #import "OCVFaceObservation+OpenCV.h"
 #import "UIImage+OCVUtils.h"
@@ -20,7 +20,7 @@ static double const kRecognitionThreshold = 15.0;
 
 #pragma mark - Extension
 
-@interface OCVFaceRecognizer ()
+@interface OCVFaceModel ()
 {
     cv::Ptr<cv::face::FaceRecognizer> _faceClassifier;
     std::vector<cv::Mat> _trainingImages;
@@ -30,7 +30,7 @@ static double const kRecognitionThreshold = 15.0;
 
 #pragma mark - Implementation
 
-@implementation OCVFaceRecognizer
+@implementation OCVFaceModel
 
 #pragma mark - Lifecycle
 

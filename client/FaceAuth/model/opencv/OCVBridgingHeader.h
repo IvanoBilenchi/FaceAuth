@@ -4,4 +4,4 @@
 //
 
 #import "OCVFaceObservation.h"
-#import "OCVFaceRecognizer.h"
+#import "OCVFaceModel.h"

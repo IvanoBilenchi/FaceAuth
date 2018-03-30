@@ -27,7 +27,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
             cameraView.setPreview(nil)
             
             if mode == .enroll {
-                recognizer = FaceRecognizer()
+                recognizer = FaceModel()
                 navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: .done,
                                                                          target: self,
                                                                          action: #selector(handleDoneButton))
@@ -40,7 +40,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
     // MARK: Private properties
     
     private let detector: FaceDetector
-    private var recognizer: FaceRecognizer?
+    private var recognizer: FaceModel?
     private let cameraView: CameraView
     
     // MARK: Lifecycle
@@ -78,7 +78,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         cameraView.setCameraButtonEnabled(true)
     }
     
-    func faceDetectorStoppedDetectingFace(_ faceDetector: FaceDetector) {
+    func faceDetectorDidStopDetectingFace(_ faceDetector: FaceDetector) {
         cameraView.removeFaceBoundingBox()
         cameraView.setCameraButtonEnabled(false)
     }
@@ -95,7 +95,7 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
                 refreshDoneButton()
             }
         } else {
-            delegate?.faceController(self, didCaptureFace: FaceRecognizer.processedImage(from: observation))
+            delegate?.faceController(self, didCaptureFace: FaceModel.processedImage(from: observation))
         }
     }
     

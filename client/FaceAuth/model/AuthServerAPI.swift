@@ -18,20 +18,20 @@ class AuthServerAPI: NSObject, URLSessionDelegate {
     
     // MARK: Public properties
     
-    let serverName: String
+    let hostName: String
     let port: UInt
     let useHTTPS: Bool
     
     weak var delegate: AuthServerAPIDelegate?
     
     var server: String {
-        return "\(useHTTPS ? "https" : "http")://\(serverName):\(port)"
+        return "\(useHTTPS ? "https" : "http")://\(hostName):\(port)"
     }
     
     // MARK: Lifecycle
     
-    init(serverName: String = "localhost", port: UInt = 80, useHTTPS: Bool = false) {
-        self.serverName = serverName
+    init(hostName: String = "localhost", port: UInt = 80, useHTTPS: Bool = false) {
+        self.hostName = hostName
         self.port = port
         self.useHTTPS = useHTTPS
     }

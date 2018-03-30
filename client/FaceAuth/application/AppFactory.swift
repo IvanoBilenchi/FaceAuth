@@ -10,7 +10,7 @@ class AppFactory {
     
     // MARK: Model
     
-    lazy var authServerAPI: AuthServerAPI = AuthServerAPI(serverName: Config.API.Server.name,
+    lazy var authServerAPI: AuthServerAPI = AuthServerAPI(hostName: Config.API.Server.name,
                                                           port: Config.API.Server.port,
                                                           useHTTPS: Config.API.Server.useHTTPS)
     

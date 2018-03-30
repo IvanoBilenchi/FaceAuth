@@ -8,7 +8,7 @@ import Vision
 
 protocol FaceDetectorDelegate: class {
     func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation)
-    func faceDetectorStoppedDetectingFace(_ faceDetector: FaceDetector)
+    func faceDetectorDidStopDetectingFace(_ faceDetector: FaceDetector)
 }
 
 class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -42,7 +42,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func stopDetecting() {
         session.stopRunning()
-        delegate?.faceDetectorStoppedDetectingFace(self)
+        delegate?.faceDetectorDidStopDetectingFace(self)
     }
     
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
@@ -59,7 +59,7 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     private func handleFaceRequestCompletion(request: VNRequest?, error: Error?) {
         guard let observation = request?.results?.first as? VNFaceObservation else {
-            DispatchQueue.main.async { self.delegate?.faceDetectorStoppedDetectingFace(self) }
+            DispatchQueue.main.async { self.delegate?.faceDetectorDidStopDetectingFace(self) }
             return
         }
         
@@ -69,14 +69,14 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         
         // Ensure bounding box is not out of bounds
         guard box.intersection(CGRect(x: 0.0, y: 0.0, width: 1.0, height: 1.0)).equalTo(box) else {
-            DispatchQueue.main.async { self.delegate?.faceDetectorStoppedDetectingFace(self) }
+            DispatchQueue.main.async { self.delegate?.faceDetectorDidStopDetectingFace(self) }
             return
         }
         
         // Get position of eyes for alignment
         guard let leftEye = observation.landmarks?.leftPupil?.normalizedPoints.first,
             let rightEye = observation.landmarks?.rightPupil?.normalizedPoints.first else {
-                DispatchQueue.main.async { self.delegate?.faceDetectorStoppedDetectingFace(self) }
+                DispatchQueue.main.async { self.delegate?.faceDetectorDidStopDetectingFace(self) }
                 return
         }
         

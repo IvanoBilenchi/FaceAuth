@@ -3,4 +3,4 @@
 //  Copyright © 2018 Ivano Bilenchi. All rights reserved.
 //
 
-typealias FaceRecognizer = OCVFaceRecognizer
+typealias FaceModel = OCVFaceModel

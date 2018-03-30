@@ -14,11 +14,11 @@
 		CC2C0D3C206571F200A8B32C /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2C0D3B206571F200A8B32C /* AlertController.swift */; };
 		CC5CAF1C2056A53F0096D17B /* FaceObservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */; };
 		CC5CAF202056E2610096D17B /* CameraButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5CAF1F2056E2610096D17B /* CameraButton.swift */; };
-		CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */; };
+		CC6DEC4C20593C5700624FC1 /* OCVFaceModel.mm in Sources */ = {isa = PBXBuildFile; fileRef = CC6DEC4620593C5700624FC1 /* OCVFaceModel.mm */; };
 		CC6FEF832067DD86002EC342 /* cert.der in Resources */ = {isa = PBXBuildFile; fileRef = CC6FEF822067DD86002EC342 /* cert.der */; };
 		CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */ = {isa = PBXBuildFile; fileRef = CC724B14205AEA7700043C82 /* OCVFaceObservation.m */; };
 		CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC75DB602051ACA800B0B58A /* FaceDetector.swift */; };
-		CC7EA6ED20598EB20091F580 /* FaceRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */; };
+		CC7EA6ED20598EB20091F580 /* FaceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC7EA6EC20598EB20091F580 /* FaceModel.swift */; };
 		CCA1B38620519AA600DB8A7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CCA1B37E20519AA600DB8A7F /* Assets.xcassets */; };
 		CCA1B38720519AA600DB8A7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CCA1B37F20519AA600DB8A7F /* LaunchScreen.storyboard */; };
 		CCA1B38920519AA600DB8A7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1B38320519AA600DB8A7F /* AppDelegate.swift */; };
@@ -43,13 +43,13 @@
 		CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceObservation.swift; sourceTree = "<group>"; };
 		CC5CAF1F2056E2610096D17B /* CameraButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraButton.swift; sourceTree = "<group>"; };
 		CC6DEC3D20593B8300624FC1 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = External/opencv2.framework; sourceTree = "<group>"; };
-		CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OCVFaceRecognizer.mm; sourceTree = "<group>"; };
-		CC6DEC4720593C5700624FC1 /* OCVFaceRecognizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCVFaceRecognizer.h; sourceTree = "<group>"; };
+		CC6DEC4620593C5700624FC1 /* OCVFaceModel.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = OCVFaceModel.mm; sourceTree = "<group>"; };
+		CC6DEC4720593C5700624FC1 /* OCVFaceModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCVFaceModel.h; sourceTree = "<group>"; };
 		CC6FEF822067DD86002EC342 /* cert.der */ = {isa = PBXFileReference; lastKnownFileType = file; name = cert.der; path = ../../../server/res/certs/cert.der; sourceTree = "<group>"; };
 		CC724B13205AEA7700043C82 /* OCVFaceObservation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCVFaceObservation.h; sourceTree = "<group>"; };
 		CC724B14205AEA7700043C82 /* OCVFaceObservation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = OCVFaceObservation.m; sourceTree = "<group>"; };
 		CC75DB602051ACA800B0B58A /* FaceDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceDetector.swift; sourceTree = "<group>"; };
-		CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceRecognizer.swift; sourceTree = "<group>"; };
+		CC7EA6EC20598EB20091F580 /* FaceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceModel.swift; sourceTree = "<group>"; };
 		CC7EA6EE20598FA60091F580 /* OCVBridgingHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OCVBridgingHeader.h; sourceTree = "<group>"; };
 		CCA1B36820519A0200DB8A7F /* FaceAuth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FaceAuth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CCA1B37E20519AA600DB8A7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -97,8 +97,8 @@
 				CC724B14205AEA7700043C82 /* OCVFaceObservation.m */,
 				CCEF27CC2069282400B166AA /* OCVFaceObservation+OpenCV.h */,
 				CCEF27CD2069282400B166AA /* OCVFaceObservation+OpenCV.mm */,
-				CC6DEC4720593C5700624FC1 /* OCVFaceRecognizer.h */,
-				CC6DEC4620593C5700624FC1 /* OCVFaceRecognizer.mm */,
+				CC6DEC4720593C5700624FC1 /* OCVFaceModel.h */,
+				CC6DEC4620593C5700624FC1 /* OCVFaceModel.mm */,
 				CCEF27CF206928E900B166AA /* UIImage+OCVUtils.h */,
 				CCEF27D0206928E900B166AA /* UIImage+OCVUtils.mm */,
 			);
@@ -185,7 +185,7 @@
 				CC214F732063FC790034C722 /* Credentials.swift */,
 				CC75DB602051ACA800B0B58A /* FaceDetector.swift */,
 				CC5CAF1B2056A53F0096D17B /* FaceObservation.swift */,
-				CC7EA6EC20598EB20091F580 /* FaceRecognizer.swift */,
+				CC7EA6EC20598EB20091F580 /* FaceModel.swift */,
 				CC2C0D35206520C000A8B32C /* Response.swift */,
 			);
 			path = model;
@@ -272,7 +272,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC75DB612051ACA800B0B58A /* FaceDetector.swift in Sources */,
-				CC6DEC4C20593C5700624FC1 /* OCVFaceRecognizer.mm in Sources */,
+				CC6DEC4C20593C5700624FC1 /* OCVFaceModel.mm in Sources */,
 				CC724B15205AEA7700043C82 /* OCVFaceObservation.m in Sources */,
 				CCF710442066C01C000F18BD /* LoginCoordinator.swift in Sources */,
 				CCB6771C2062CEEE00021868 /* LoginController.swift in Sources */,
@@ -291,7 +291,7 @@
 				CCA1B38920519AA600DB8A7F /* AppDelegate.swift in Sources */,
 				CC2C0D3C206571F200A8B32C /* AlertController.swift in Sources */,
 				CCB90AFF2055412300EF8698 /* FaceView.swift in Sources */,
-				CC7EA6ED20598EB20091F580 /* FaceRecognizer.swift in Sources */,
+				CC7EA6ED20598EB20091F580 /* FaceModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
