@@ -9,7 +9,7 @@ KEY_PEM="${CERT_DIR}/key.pem"
 
 if ! { [ -f "${CERT_PEM}" ] && [ -f "${KEY_PEM}" ]; }; then
 	rm -f "${CERT_PEM}" "${CERT_DER}" "${KEY_PEM}"
-	openssl req -x509 -newkey rsa:4096 -nodes -out "${CERT_PEM}" -keyout "${KEY_PEM}" -days 365 -subj '/CN=ib-soft.net/O=IBSoft/C=IT'
+	openssl req -x509 -newkey rsa:4096 -nodes -out "${CERT_PEM}" -keyout "${KEY_PEM}" -days 365 -subj '/CN=MacBook-Pro-di-Ivano.local/O=IvanoBilenchi/C=IT'
 fi
 
 if [ ! -f "{CERT_DER}" ]; then

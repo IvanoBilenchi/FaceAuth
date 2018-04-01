@@ -12,7 +12,7 @@ protocol AuthServerAPIDelegate: class {
     func api(_ api: AuthServerAPI, didReceiveDeleteResponse response: GenericResponse)
 }
 
-class AuthServerAPI: NSObject, URLSessionDelegate {
+class AuthServerAPI: NSObject, URLSessionTaskDelegate {
     
     private typealias API = Config.API
     
@@ -141,24 +141,43 @@ class AuthServerAPI: NSObject, URLSessionDelegate {
         }.resume()
     }
     
-    // MARK: URLSessionDelegate
+    // MARK: URLSessionTaskDelegate
     
     func urlSession(_ session: URLSession,
                     didReceive challenge: URLAuthenticationChallenge,
                     completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
 
-        // Check via self-signed cert
+        // Check via pinned self-signed cert
         if (challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust),
             let trust = challenge.protectionSpace.serverTrust,
-            let data = NSData(contentsOfFile: Config.API.Server.httpsCert),
-            let cert = SecCertificateCreateWithData(nil, data) {
-            SecTrustSetAnchorCertificates(trust, [cert] as CFArray)
-            completionHandler(.useCredential, URLCredential(trust: trust))
-            return
+            let clientCertData = NSData(contentsOfFile: Config.API.Server.httpsCert),
+            let clientCert = SecCertificateCreateWithData(nil, clientCertData),
+            let serverCert = SecTrustGetCertificateAtIndex(trust, 0) {
+            
+            SecTrustSetAnchorCertificates(trust, [clientCert] as CFArray)
+            SecTrustSetPolicies(trust, SecPolicyCreateSSL(true, challenge.protectionSpace.host as CFString))
+            
+            var result: SecTrustResultType = .deny
+            SecTrustEvaluate(trust, &result)
+            
+            if (result == .proceed || result == .unspecified) &&
+                clientCertData.isEqual(to: SecCertificateCopyData(serverCert) as Data) {
+                completionHandler(.useCredential, URLCredential(trust: trust))
+                return
+            }
         }
         
         // Fail
         completionHandler(.cancelAuthenticationChallenge, nil)
+    }
+    
+    func urlSession(_ session: URLSession,
+                    task: URLSessionTask,
+                    willPerformHTTPRedirection response: HTTPURLResponse,
+                    newRequest request: URLRequest,
+                    completionHandler: @escaping (URLRequest?) -> Void) {
+        // Disallow redirects
+        completionHandler(nil)
     }
     
     // MARK: Private methods
