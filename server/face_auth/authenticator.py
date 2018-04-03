@@ -1,5 +1,6 @@
-from enum import Enum, auto
+from os import unlink
 from passlib.hash import bcrypt_sha256
+from pyAesCrypt import crypto
 from typing import Optional
 
 from . import config
@@ -11,18 +12,7 @@ from .user import User
 class Authenticator:
     """Authenticates users."""
 
-    class State(Enum):
-        """Authentication state."""
-        NOT_AUTHENTICATED = auto()
-        WAITING_FOR_FACE = auto()
-        AUTHENTICATED = auto()
-
     # Public properties
-
-    @property
-    def state(self) -> State:
-        """The current authentication state."""
-        return self.__state
 
     @property
     def user(self) -> User:
@@ -34,7 +24,6 @@ class Authenticator:
     def __init__(self, email: str) -> None:
         """Initializes a new authenticator."""
         self.__email: str = email
-        self.__state = Authenticator.State.NOT_AUTHENTICATED
         self.__user: Optional[User] = None
 
     # Public methods
@@ -44,24 +33,30 @@ class Authenticator:
         """Returns a hashed and salted password."""
         return bcrypt_sha256.hash(password)
 
+    @classmethod
+    def encrypt_file(cls, path: str, out_path: str, password: str):
+        """Encrypts a file (AES265)."""
+        crypto.encryptFile(path, out_path, password, 64 * 1024)
+        unlink(path)
+
     def verify_password(self, database: Database, password: str) -> bool:
         """Verifies that the given password matches that of the registered user."""
         user = database.get_user(self.__email)
 
         if not (user and bcrypt_sha256.verify(password, database.get_password(user))):
-            self.__state = Authenticator.State.NOT_AUTHENTICATED
             self.__user = None
             return False
 
-        self.__state = Authenticator.State.WAITING_FOR_FACE
         self.__user = user
         return True
 
-    def verify_face(self) -> bool:
+    def verify_face(self, password: str) -> bool:
         """Verifies that the user's photo is recognized by the biometric model."""
-        recognizer = FaceRecognizer(self.__user.face_model_path, config.FACE_RECOGNITION_THRESHOLD)
-        if self.__state != Authenticator.State.WAITING_FOR_FACE or not recognizer.predict(self.__user.face_path):
-            return False
+        crypto.decryptFile(self.__user.encrypted_model_path, self.__user.face_model_path, password, 64 * 1024)
 
-        self.__state = Authenticator.State.AUTHENTICATED
-        return True
+        try:
+            recognizer = FaceRecognizer(self.__user.face_model_path, config.FACE_RECOGNITION_THRESHOLD)
+            return recognizer.predict(self.__user.face_path)
+        finally:
+            unlink(self.__user.face_model_path)
+            unlink(self.__user.face_path)

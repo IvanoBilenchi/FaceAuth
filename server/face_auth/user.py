@@ -14,8 +14,13 @@ class User:
 
     @property
     def face_model_path(self) -> str:
-        """Path to the face model."""
+        """Path to the decrypted face model."""
         return path.join(self.user_dir, 'model.yml')
+
+    @property
+    def encrypted_model_path(self) -> str:
+        """Path to the encrypted face model."""
+        return path.join(self.user_dir, 'model.yml.aes')
 
     @property
     def face_path(self) -> str:

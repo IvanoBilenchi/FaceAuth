@@ -12,7 +12,7 @@ def shared_app() -> Flask:
 
     flask_app = Flask('face_auth')
     flask_app.config.from_object('face_auth.config')
-    SSLify(flask_app, age=300, subdomains=True, permanent=True)
+    SSLify(flask_app, subdomains=True, permanent=True)
 
     @flask_app.teardown_appcontext
     def teardown(exception: Exception):

@@ -50,7 +50,7 @@ def require_login(f: Callable[[User], Tuple[Any, int]]):
         user = auth.user
         login_request.save_file(user.face_path)
 
-        if not auth.verify_face():
+        if not auth.verify_face(login_request.password):
             return jsonify({API.Response.KEY_INFO: API.Response.VAL_UNRECOGNIZED_FACE}), 401
 
         return f(user)
@@ -79,6 +79,7 @@ def register():
         return internal_error()
 
     reg_request.save_file(user.face_model_path)
+    Authenticator.encrypt_file(user.face_model_path, user.encrypted_model_path, reg_request.password)
 
     return success()
 
