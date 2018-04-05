@@ -5,6 +5,7 @@ from typing import Optional
 from werkzeug.datastructures import FileStorage
 
 from .config import API, Validation
+from .face_recognizer import FaceRecognizer
 
 
 class Request:
@@ -35,11 +36,16 @@ class Request:
         self._file.stream.seek(0)
         return size
 
-    def save_file(self, file_path: str) -> None:
+    def save_file(self, file_path: str) -> bool:
+        """Saves the uploaded file.
+
+        :return: True on success, False on error.
+        """
         with suppress(FileNotFoundError):
             os.unlink(file_path)
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
         self._file.save(file_path)
+        return True
 
 
 class LoginRequest(Request):
@@ -75,6 +81,16 @@ class RegistrationRequest(Request):
         if not super(RegistrationRequest, self).is_valid():
             return False
         return self.file_size() in Validation.MODEL_SIZE_RANGE
+
+    def save_file(self, file_path: str) -> bool:
+        if not super(RegistrationRequest, self).save_file(file_path):
+            return False
+
+        if FaceRecognizer(file_path).number_of_samples < Validation.MODEL_MIN_SAMPLES:
+            os.unlink(file_path)
+            return False
+
+        return True
 
 
 class UpdateRequest(LoginRequest):

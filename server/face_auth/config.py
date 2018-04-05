@@ -23,6 +23,7 @@ class Validation:
     DESC_LENGTH_RANGE = range(0, 101)
     PHOTO_SIZE_RANGE = range(1, 1024 * 1024)
     MODEL_SIZE_RANGE = range(1, 10 * 1024 * 1024)
+    MODEL_MIN_SAMPLES = 10
 
 
 class API:

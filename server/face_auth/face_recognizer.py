@@ -4,6 +4,13 @@ import cv2
 class FaceRecognizer:
     """Face recognizer."""
 
+    # Public properties
+
+    @property
+    def number_of_samples(self) -> int:
+        """The number of samples used to train this recognizer."""
+        return len(self.__face_classifier.getHistograms())
+
     # Public methods
 
     def __init__(self, model_path: str, threshold: float = 15.0) -> None:

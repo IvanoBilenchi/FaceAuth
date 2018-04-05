@@ -48,7 +48,9 @@ def require_login(f: Callable[[User], Tuple[Any, int]]):
             return jsonify({API.Response.KEY_INFO: API.Response.VAL_INVALID_USER_PASS}), 401
 
         user = auth.user
-        login_request.save_file(user.face_path)
+
+        if not login_request.save_file(user.face_path):
+            return invalid_request()
 
         if not auth.verify_face(login_request.password):
             return jsonify({API.Response.KEY_INFO: API.Response.VAL_UNRECOGNIZED_FACE}), 401
@@ -78,9 +80,10 @@ def register():
     if not user:
         return internal_error()
 
-    reg_request.save_file(user.face_model_path)
-    Authenticator.encrypt_file(user.face_model_path, user.encrypted_model_path, reg_request.password)
+    if not reg_request.save_file(user.face_model_path):
+        return invalid_request()
 
+    Authenticator.encrypt_file(user.face_model_path, user.encrypted_model_path, reg_request.password)
     return success()
 
 
