@@ -206,6 +206,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CCA1B37A20519A0200DB8A7F /* Build configuration list for PBXNativeTarget "FaceAuth" */;
 			buildPhases = (
+				CCD48A3D207B826D00E7BB33 /* ShellScript */,
 				CCA1B36420519A0200DB8A7F /* Sources */,
 				CCA1B36520519A0200DB8A7F /* Frameworks */,
 				CCA1B36620519A0200DB8A7F /* Resources */,
@@ -265,6 +266,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CCD48A3D207B826D00E7BB33 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PROJECT_DIR}/../server/cert_gen.sh\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		CCA1B36420519A0200DB8A7F /* Sources */ = {
