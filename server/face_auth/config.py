@@ -74,7 +74,6 @@ class API:
 
 # Flask
 DEBUG = False
-SECRET_KEY = b'\x08\x12\xddR\x1e\xaf\x91\x7f\xd2\xa3\r\x16\x8ex\\\xe9\xaeMQ\x02\xc4W\xd4\xeb'
 MAX_CONTENT_LENGTH = 20 * 1024 * 1024
 
 # Authentication
