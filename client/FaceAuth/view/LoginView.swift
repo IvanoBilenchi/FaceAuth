@@ -6,8 +6,12 @@
 import UIKit
 
 protocol LoginViewDelegate: class {
-    func loginView(_ view: LoginView, didPressLoginButtonWithUserName userName: String, password: String)
-    func loginView(_ view: LoginView, didPressRegisterButtonWithUserName userName: String, password: String)
+    func loginView(_ view: LoginView,
+                   didPressLoginButtonWithUserName userName: String,
+                   password: String)
+    func loginView(_ view: LoginView,
+                   didPressRegisterButtonWithUserName userName: String,
+                   password: String)
 }
 
 class LoginView: UIView, UITextFieldDelegate {
@@ -120,32 +124,42 @@ class LoginView: UIView, UITextFieldDelegate {
         userNameLogo.widthAnchor.constraint(equalToConstant: logoSize).isActive = true
         userNameLogo.heightAnchor.constraint(equalToConstant: logoSize).isActive = true
         userNameLogo.leftAnchor.constraint(equalTo: form.leftAnchor, constant: margin).isActive = true
-        userNameLogo.rightAnchor.constraint(equalTo: userNameField.leftAnchor, constant: -sMargin).isActive = true
+        userNameLogo.rightAnchor.constraint(equalTo: userNameField.leftAnchor,
+                                            constant: -sMargin).isActive = true
         userNameLogo.centerYAnchor.constraint(equalTo: userNameField.centerYAnchor).isActive = true
         
         userNameField.translatesAutoresizingMaskIntoConstraints = false
-        userNameField.topAnchor.constraint(equalTo: form.topAnchor, constant: margin).isActive = true
-        userNameField.rightAnchor.constraint(equalTo: form.rightAnchor, constant: -margin).isActive = true
+        userNameField.topAnchor.constraint(equalTo: form.topAnchor,
+                                           constant: margin).isActive = true
+        userNameField.rightAnchor.constraint(equalTo: form.rightAnchor,
+                                             constant: -margin).isActive = true
         
         passwordLogo.translatesAutoresizingMaskIntoConstraints = false
         passwordLogo.widthAnchor.constraint(equalToConstant: logoSize).isActive = true
         passwordLogo.heightAnchor.constraint(equalToConstant: logoSize).isActive = true
-        passwordLogo.leftAnchor.constraint(equalTo: form.leftAnchor, constant: margin).isActive = true
-        passwordLogo.rightAnchor.constraint(equalTo: passwordField.leftAnchor, constant: -sMargin).isActive = true
+        passwordLogo.leftAnchor.constraint(equalTo: form.leftAnchor,
+                                           constant: margin).isActive = true
+        passwordLogo.rightAnchor.constraint(equalTo: passwordField.leftAnchor,
+                                            constant: -sMargin).isActive = true
         passwordLogo.centerYAnchor.constraint(equalTo: passwordField.centerYAnchor).isActive = true
         
         passwordField.translatesAutoresizingMaskIntoConstraints = false
-        passwordField.topAnchor.constraint(equalTo: userNameField.bottomAnchor, constant: margin).isActive = true
-        passwordField.rightAnchor.constraint(equalTo: form.rightAnchor, constant: -margin).isActive = true
+        passwordField.topAnchor.constraint(equalTo: userNameField.bottomAnchor,
+                                           constant: margin).isActive = true
+        passwordField.rightAnchor.constraint(equalTo: form.rightAnchor,
+                                             constant: -margin).isActive = true
         
         loginButton.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor, constant: margin).isActive = true
+        loginButton.topAnchor.constraint(equalTo: passwordField.bottomAnchor,
+                                         constant: margin).isActive = true
         loginButton.centerXAnchor.constraint(equalTo: form.centerXAnchor).isActive = true
         
         registerButton.translatesAutoresizingMaskIntoConstraints = false
-        registerButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor, constant: xsMargin).isActive = true
+        registerButton.topAnchor.constraint(equalTo: loginButton.bottomAnchor,
+                                            constant: xsMargin).isActive = true
         registerButton.centerXAnchor.constraint(equalTo: form.centerXAnchor).isActive = true
-        registerButton.bottomAnchor.constraint(equalTo: form.bottomAnchor, constant: -(sMargin + xsMargin)).isActive = true
+        registerButton.bottomAnchor.constraint(equalTo: form.bottomAnchor,
+                                               constant: -(sMargin + xsMargin)).isActive = true
     }
     
     // MARK: UIView
@@ -195,8 +209,12 @@ private extension UITextField {
         field.autocapitalizationType = .none
         field.clearButtonMode = .always
         field.textContentType = UITextContentType("")
-        field.addTarget(loginView, action: #selector(LoginView.handleFieldsChange), for: .editingChanged)
-        field.addTarget(loginView, action: #selector(LoginView.switchFieldFocus(_:)), for: .editingDidEndOnExit)
+        field.addTarget(loginView,
+                        action: #selector(LoginView.handleFieldsChange),
+                        for: .editingChanged)
+        field.addTarget(loginView,
+                        action: #selector(LoginView.switchFieldFocus(_:)),
+                        for: .editingDidEndOnExit)
         return field
     }
 }
@@ -206,7 +224,9 @@ private extension UIButton {
         let btn = UIButton(type: .system)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: UIFont.buttonFontSize)
         btn.isEnabled = false
-        btn.addTarget(loginView, action: #selector(LoginView.handleButtonPress(_:)), for: .touchUpInside)
+        btn.addTarget(loginView,
+                      action: #selector(LoginView.handleButtonPress(_:)),
+                      for: .touchUpInside)
         return btn
     }
 }

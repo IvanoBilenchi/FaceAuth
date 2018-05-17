@@ -8,7 +8,9 @@ import UIKit
 
 protocol FaceControllerDelegate: class {
     func faceController(_ faceController: FaceController, didCaptureFace faceImage: UIImage)
-    func faceController(_ faceController: FaceController, didTrainModel modelPath: String, lastCapturedFace: UIImage)
+    func faceController(_ faceController: FaceController,
+                        didTrainModel modelPath: String,
+                        lastCapturedFace: UIImage)
 }
 
 class FaceController: UIViewController {
@@ -74,7 +76,8 @@ class FaceController: UIViewController {
     
     @objc private func handleDoneButton() {
         guard let recognizer = recognizer else { return }
-        let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
+        let documentDirUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!
+        let modelPath = documentDirUrl.path + "/model.yml"
         
         recognizer.train()
         recognizer.serializeModelToFile(atPath: modelPath)

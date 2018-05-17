@@ -44,10 +44,12 @@ extension LoginCoordinator: AuthServerAPIDelegate {
         switch response {
         case .loggedIn(let userName, let name, let description):
             if let loginCredentials = credentialsBuilder?.buildLoginCredentials() {
-                alertController.showLoggedInMenu(userName: userName, name: name, description: description, deleteHandler: {
+                let deleteHandler: () -> (Void) = {
                     self.loginController.setWaitingForResponse(true)
                     api.delete(withCredentials: loginCredentials, completionHandler: { print($0) })
-                })
+                }
+                alertController.showLoggedInMenu(userName: userName, name: name,
+                                                 description: description, deleteHandler: deleteHandler)
             }
             
         case .unrecognizedFace:

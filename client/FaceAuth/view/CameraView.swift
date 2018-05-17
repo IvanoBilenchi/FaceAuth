@@ -82,7 +82,8 @@ class CameraView: UIView {
         let buttonSize: CGFloat = 80.0
         
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
-        bottomBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -barSize).isActive = true
+        bottomBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
+                                       constant: -barSize).isActive = true
         bottomBar.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         bottomBar.rightAnchor.constraint(equalTo: rightAnchor).isActive = true
         bottomBar.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
@@ -94,13 +95,15 @@ class CameraView: UIView {
         photoPreview.leftAnchor.constraint(equalTo: safeAreaLayoutGuide.leftAnchor).isActive = true
         
         discardButton.translatesAutoresizingMaskIntoConstraints = false
-        discardButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor, constant: -30.0).isActive = true
+        discardButton.rightAnchor.constraint(equalTo: safeAreaLayoutGuide.rightAnchor,
+                                             constant: -30.0).isActive = true
         discardButton.centerYAnchor.constraint(equalTo: photoPreview.centerYAnchor).isActive = true
         
         cameraButton.translatesAutoresizingMaskIntoConstraints = false
         cameraButton.widthAnchor.constraint(equalToConstant: buttonSize).isActive = true
         cameraButton.heightAnchor.constraint(equalToConstant: buttonSize).isActive = true
-        cameraButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: (buttonSize - barSize) / 2.0).isActive = true
+        cameraButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor,
+                                             constant: (buttonSize - barSize) / 2.0).isActive = true
         cameraButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
     }
     

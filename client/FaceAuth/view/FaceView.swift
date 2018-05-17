@@ -37,7 +37,8 @@ class FaceView: UIView {
         let mutablePath = CGMutablePath()
         
         for eye in [leftEye, rightEye] {
-            let path = UIBezierPath(ovalIn: CGRect(center: eye, size: CGSize(width: 5.0, height: 5.0)))
+            let rect = CGRect(center: eye, size: CGSize(width: 5.0, height: 5.0))
+            let path = UIBezierPath(ovalIn: rect)
             mutablePath.addPath(path.cgPath)
         }
         

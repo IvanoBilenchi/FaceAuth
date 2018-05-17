@@ -52,7 +52,8 @@ static cv::Mat maskedToEllpise(cv::Mat mat, int hSize) {
     cv::Point ellipseCenter = cv::Point(mat.cols / 2, mat.rows / 2);
     cv::Size ellipseSize = cv::Size(hSize / 2, mat.rows / 2);
     
-    cv::ellipse(mask, ellipseCenter, ellipseSize, 0.0, 0.0, 360.0, cv::Scalar(255, 255, 255), -1, 8);
+    cv::ellipse(mask, ellipseCenter, ellipseSize, 0.0, 0.0, 360.0,
+                cv::Scalar(255, 255, 255), -1, 8);
     
     cv::Mat result;
     cv::bitwise_and(mat, mask, result);
@@ -102,7 +103,8 @@ static CGRect denormalizedRect(CGRect rect, CGSize size) {
     mat = applyCLAHE(mat);
     
     // Remove background noise
-    int hSize = (int)(kImageMaxSize * self.eyeDistance * kEyeDistanceMultiplier / self.boundingBox.size.width);
+    CGFloat boundingWidth = self.boundingBox.size.width;
+    int hSize = (int)(kImageMaxSize * self.eyeDistance * kEyeDistanceMultiplier / boundingWidth);
     mat = maskedToEllpise(mat, hSize);
     
     return mat;

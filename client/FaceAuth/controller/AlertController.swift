@@ -14,7 +14,9 @@ class AlertController {
     // MARK: Public methods
     
     func showUserDetailsEntryUI(_ completionHandler: @escaping (_ name: String, _ description: String) -> Void) {
-        let alert = UIAlertController(title: "🖋 Registration successful", message: "\nPlease fill in your details.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "🖋 Registration successful",
+                                      message: "\nPlease fill in your details.",
+                                      preferredStyle: .alert)
         
         alert.addTextField(configurationHandler: {
             $0.placeholder = "Name"
@@ -31,11 +33,16 @@ class AlertController {
         rootViewController?.present(alert, animated: true)
     }
     
-    func showLoggedInMenu(userName: String, name: String, description: String, deleteHandler: @escaping () -> Void) {
-        let alert = UIAlertController(title: "👤 Hello, \(name)", message: "\nUser name: \(userName)\n\nDescription: \(description)", preferredStyle: .alert)
+    func showLoggedInMenu(userName: String, name: String, description: String,
+                          deleteHandler: @escaping () -> Void) {
+        let alert = UIAlertController(title: "👤 Hello, \(name)",
+            message: "\nUser name: \(userName)\n\nDescription: \(description)",
+            preferredStyle: .alert)
         
         alert.addAction(UIAlertAction(title: "Bye", style: .default))
-        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in deleteHandler() }))
+        alert.addAction(UIAlertAction(title: "Delete",
+                                      style: .destructive,
+                                      handler: { _ in deleteHandler() }))
         
         rootViewController?.present(alert, animated: true)
     }

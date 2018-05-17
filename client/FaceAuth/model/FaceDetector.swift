@@ -22,7 +22,8 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     // MARK: Private properties
     
-    private let sampleQueue = DispatchQueue(label: "com.ivanobilenchi.FaceAuth.sampleQueue", qos: .userInteractive)
+    private let sampleQueue = DispatchQueue(label: "com.ivanobilenchi.FaceAuth.sampleQueue",
+                                            qos: .userInteractive)
     private let requestHandler = VNSequenceRequestHandler()
     private var lastBuffer: CVPixelBuffer!
     
@@ -31,7 +32,10 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     init(session: AVCaptureSession) {
         self.session = session
         super.init()
-        (session.outputs.first as? AVCaptureVideoDataOutput)?.setSampleBufferDelegate(self, queue: sampleQueue)
+        
+        if let output = session.outputs.first as? AVCaptureVideoDataOutput {
+            output.setSampleBufferDelegate(self, queue: sampleQueue)
+        }
     }
     
     // MARK: Public methods
@@ -47,7 +51,9 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    func captureOutput(_ output: AVCaptureOutput,
+                       didOutput sampleBuffer: CMSampleBuffer,
+                       from connection: AVCaptureConnection) {
         guard let cvBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
         lastBuffer = cvBuffer
         
@@ -86,7 +92,8 @@ class FaceDetector: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
         )
         
         // Notify observation
-        let faceObservation = FaceObservation(buffer: lastBuffer, boundingBox: box, leftEye: eyes.left, rightEye: eyes.right)
+        let faceObservation = FaceObservation(buffer: lastBuffer, boundingBox: box,
+                                              leftEye: eyes.left, rightEye: eyes.right)
         lastObservation = faceObservation
         
         DispatchQueue.main.async {

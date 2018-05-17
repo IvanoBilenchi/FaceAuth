@@ -72,7 +72,10 @@ static CIContext *ciContext;
     }
 }
          
-- (instancetype)initWithBuffer:(CVPixelBufferRef)buffer boundingBox:(CGRect)boundingBox leftEye:(CGPoint)leftEye rightEye:(CGPoint)rightEye {
+- (instancetype)initWithBuffer:(CVPixelBufferRef)buffer
+                   boundingBox:(CGRect)boundingBox
+                       leftEye:(CGPoint)leftEye
+                      rightEye:(CGPoint)rightEye {
     if ((self = [super init])) {
         _buffer = CVPixelBufferRetain(buffer);
         _boundingBox = boundingBox;

@@ -29,8 +29,15 @@ class CredentialsBuilder {
         self.password = password
     }
     
-    @discardableResult func set(image: UIImage) -> CredentialsBuilder { self.image = image; return self }
-    @discardableResult func set(modelPath: String) -> CredentialsBuilder { self.modelPath = modelPath; return self }
+    @discardableResult func set(image: UIImage) -> CredentialsBuilder {
+        self.image = image
+        return self
+    }
+    
+    @discardableResult func set(modelPath: String) -> CredentialsBuilder {
+        self.modelPath = modelPath
+        return self
+    }
     
     func buildLoginCredentials() -> LoginCredentials? {
         guard let image = image else { return nil }
