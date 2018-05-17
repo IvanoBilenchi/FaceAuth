@@ -11,7 +11,7 @@ protocol FaceControllerDelegate: class {
     func faceController(_ faceController: FaceController, didTrainModel modelPath: String, lastCapturedFace: UIImage)
 }
 
-class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate {
+class FaceController: UIViewController {
     
     enum Mode {
         case enroll
@@ -70,20 +70,23 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         detector.stopDetecting()
     }
     
-    // MARK: FaceDetectorDelegate
+    // MARK: Handlers
     
-    func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation) {
-        cameraView.setFaceBoundingBox(faceObservation.boundingBox)
-        cameraView.setEyes(left: faceObservation.leftEye, right: faceObservation.rightEye)
-        cameraView.setCameraButtonEnabled(true)
+    @objc private func handleDoneButton() {
+        guard let recognizer = recognizer else { return }
+        let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
+        
+        recognizer.train()
+        recognizer.serializeModelToFile(atPath: modelPath)
+        delegate?.faceController(self, didTrainModel: modelPath, lastCapturedFace: recognizer.lastTrainingImage!)
     }
     
-    func faceDetectorDidStopDetectingFace(_ faceDetector: FaceDetector) {
-        cameraView.removeFaceBoundingBox()
-        cameraView.setCameraButtonEnabled(false)
+    private func refreshDoneButton() {
+        navigationItem.rightBarButtonItem?.isEnabled = (recognizer?.numberOfTrainingSamples ?? 0) >= 10
     }
-    
-    // MARK: CameraViewDelegate
+}
+
+extension FaceController: CameraViewDelegate {
     
     func cameraViewDidPressCaptureButton(_ cameraView: CameraView) {
         guard let observation = detector.lastObservation else { return }
@@ -105,19 +108,18 @@ class FaceController: UIViewController, FaceDetectorDelegate, CameraViewDelegate
         cameraView.setPreview(recognizer.lastTrainingImage)
         refreshDoneButton()
     }
+}
+
+extension FaceController: FaceDetectorDelegate {
     
-    // MARK: Handlers
-    
-    @objc private func handleDoneButton() {
-        guard let recognizer = recognizer else { return }
-        let modelPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last!.path + "/model.yml"
-        
-        recognizer.train()
-        recognizer.serializeModelToFile(atPath: modelPath)
-        delegate?.faceController(self, didTrainModel: modelPath, lastCapturedFace: recognizer.lastTrainingImage!)
+    func faceDetector(_ faceDetector: FaceDetector, didDetectFace faceObservation: FaceObservation) {
+        cameraView.setFaceBoundingBox(faceObservation.boundingBox)
+        cameraView.setEyes(left: faceObservation.leftEye, right: faceObservation.rightEye)
+        cameraView.setCameraButtonEnabled(true)
     }
     
-    private func refreshDoneButton() {
-        navigationItem.rightBarButtonItem?.isEnabled = (recognizer?.numberOfTrainingSamples ?? 0) >= 10
+    func faceDetectorDidStopDetectingFace(_ faceDetector: FaceDetector) {
+        cameraView.removeFaceBoundingBox()
+        cameraView.setCameraButtonEnabled(false)
     }
 }

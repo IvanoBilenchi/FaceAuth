@@ -5,7 +5,7 @@
 
 import Foundation
 
-class LoginCoordinator: AuthServerAPIDelegate, LoginViewDelegate, FaceControllerDelegate {
+class LoginCoordinator {
     
     // MARK: Private properties
     
@@ -34,8 +34,9 @@ class LoginCoordinator: AuthServerAPIDelegate, LoginViewDelegate, FaceController
         faceController.mode = mode
         loginController.navigationController?.pushViewController(faceController, animated: true)
     }
-    
-    // MARK: AuthServerAPIDelegate
+}
+
+extension LoginCoordinator: AuthServerAPIDelegate {
     
     func api(_ api: AuthServerAPI, didReceiveLoginResponse response: LoginResponse) {
         loginController.setWaitingForResponse(false)
@@ -116,8 +117,9 @@ class LoginCoordinator: AuthServerAPIDelegate, LoginViewDelegate, FaceController
             alertController.showErrorAlert(withMessage: message)
         }
     }
-    
-    // MARK: LoginViewDelegate
+}
+
+extension LoginCoordinator: LoginViewDelegate {
     
     func loginView(_ view: LoginView, didPressLoginButtonWithUserName userName: String, password: String) {
         credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
@@ -128,8 +130,9 @@ class LoginCoordinator: AuthServerAPIDelegate, LoginViewDelegate, FaceController
         credentialsBuilder = CredentialsBuilder(userName: userName, password: password)
         showFaceController(withMode: .enroll)
     }
-    
-    // MARK: FaceControllerDelegate
+}
+
+extension LoginCoordinator: FaceControllerDelegate {
     
     func faceController(_ faceController: FaceController, didTrainModel modelPath: String, lastCapturedFace: UIImage) {
         guard let credentialsBuilder = credentialsBuilder,
